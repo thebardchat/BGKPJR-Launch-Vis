@@ -111,7 +111,7 @@ export const KEPLER = {
   reflectivity:           0.9,
   deployAltKm:            400,           // standard LEO baseline (was 310)
   solarPressurePa:        4.56e-6,       // at 1 AU
-  nominalDvMmps:          0.20,          // DERIVED from physics (was 1.8)
+  nominalDvMmps:          0.208,         // DERIVED: (1 + η)·P·A / m  (was 1.8 — formula bug)
   targetOrbit:            "Heliocentric drift / lunar assist",
 } as const;
 
