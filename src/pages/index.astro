@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import LaunchVisualizer from "../islands/LaunchVisualizer.svelte";
 import PodComparison from "../islands/PodComparison.svelte";
+import TubeCrossSection from "../islands/TubeCrossSection.svelte";
 import { RAIL, GRYPHON, KEPLER, COSTS } from "../data/launch";
 ---
 <Layout>
@@ -131,6 +132,169 @@ import { RAIL, GRYPHON, KEPLER, COSTS } from "../data/launch";
         </div>
 
       </div>
+    </div>
+  </section>
+
+
+  <div class="divider container"></div>
+
+  <!-- ── INSIDE THE LAUNCH TUBE ───────────────────────────────── -->
+  <section class="section" id="tube">
+    <div class="container">
+      <div class="section-header">
+        <div class="label">Stage 1 — Deep Dive</div>
+        <h2>Inside the EM Launch Tube</h2>
+        <p class="section-desc">
+          The 28.7 km barrel is the largest superconducting coilgun ever proposed.
+          A cascade of NbTi electromagnetic coil rings creates a traveling magnetic wave through the evacuated bore.
+          The pod surfs that wave from zero to Mach 3.5 in 23 seconds — then punches through a proprietary
+          three-layer muzzle seal and enters the atmosphere.
+        </p>
+      </div>
+
+      <TubeCrossSection client:only="svelte" />
+
+      <div class="tube-mech-grid">
+        <div class="tube-card">
+          <div class="tc-num">01</div>
+          <h4>Sequential Coil Firing</h4>
+          <p>Each NbTi superconducting coil is energized individually, timed to the pod&apos;s exact position.
+          The leading coils ahead of the pod fire first, creating a forward magnetic attraction.
+          Coils behind the pod are de-energized immediately — preventing back-pull drag.
+          The result is a rolling wave of magnetic force that the pod&apos;s armature continuously chases.</p>
+          <div class="tc-spec">Coil spacing: ~100 m · Switching time: &lt;1 ms · Field: 8 T peak</div>
+        </div>
+        <div class="tube-card">
+          <div class="tc-num">02</div>
+          <h4>The Armature</h4>
+          <p>The mid-section of every pod contains a superconducting armature — a ring of NbTi wire chilled
+          by a small onboard cryostat. This armature acts as a permanent magnet inside the bore, coupling
+          to the tube&apos;s traveling field. No physical contact with the tube wall.
+          No friction. No rail erosion. The pod rides a magnetic cushion at 3.9G for 23 seconds.</p>
+          <div class="tc-spec">Armature temp: 20 K (onboard LH₂ coolant) · Gap: ~25 mm bore clearance</div>
+        </div>
+        <div class="tube-card">
+          <div class="tc-num">03</div>
+          <h4>900 MJ Energy Source</h4>
+          <p>A single launch consumes ~900 MJ — the equivalent of 215 kg of rocket propellant,
+          stored as electrical energy in a flywheel bank at the base of the tube.
+          The flywheels spin up over ~4 minutes between launches, accepting grid power at a controlled rate.
+          Peak discharge lasts 23 seconds. Charge rate: 650 MW. Peak draw: 39 GW.</p>
+          <div class="tc-spec">Stored energy: 900 MJ · Peak power: 39 GW · Recharge: 4 min</div>
+        </div>
+      </div>
+
+      <!-- ══ MUZZLE INTERFACE ══ -->
+      <div class="muzzle-section">
+        <div class="muzzle-header">
+          <div class="label" style="color:var(--amber)">The Critical Engineering Problem</div>
+          <h3>The Muzzle Interface</h3>
+          <p>
+            When a pod exits the tube at Mach 3.5, it hits a sealed membrane that has been maintaining 0.1 atm vacuum
+            behind it for the entire 23-second run. This membrane must exist — without it the tube fills with air
+            and the next pod accelerates through drag instead of vacuum. The nose of every pod is purpose-engineered
+            around this single impact event.
+          </p>
+        </div>
+
+        <div class="muzzle-grid">
+
+          <div class="muzzle-card seal-card">
+            <div class="mc-label amber">PROPRIETARY SEAL DESIGN</div>
+            <h4>Three-Layer Thermite Membrane System</h4>
+            <div class="layer-stack">
+              <div class="layer">
+                <div class="layer-num">L3</div>
+                <div class="layer-info">
+                  <div class="layer-name">Carbon Fiber Diaphragm</div>
+                  <div class="layer-desc">Outer structural layer. Maintains tube vacuum seal between launches. 
+                  Rated to 1.4 atm differential. Scored for controlled radial fracture on nose contact.</div>
+                </div>
+              </div>
+              <div class="layer">
+                <div class="layer-num" style="color:var(--fg-dim)">L2</div>
+                <div class="layer-info">
+                  <div class="layer-name">Aerogel Composite Buffer</div>
+                  <div class="layer-desc">Ultra-low density ceramic foam (8 kg/m³). Zero debris risk on fracture.
+                  Provides pressure equalization buffer and thermal isolation during the 23-second run.</div>
+                </div>
+              </div>
+              <div class="layer">
+                <div class="layer-num" style="color:var(--amber)">L1</div>
+                <div class="layer-info">
+                  <div class="layer-name" style="color:var(--amber)">Thermite Membrane (Al/Fe₂O₃)</div>
+                  <div class="layer-desc">The proprietary layer. On tungsten carbide tip contact at 1,190 m/s,
+                  friction initiates thermite combustion across the membrane in &lt;50 microseconds.
+                  The membrane self-consumes into alumina ceramic dust and iron vapor — zero solid debris field.
+                  The pod passes through a brief plasma aperture rather than a solid barrier.</div>
+                </div>
+              </div>
+            </div>
+            <div class="seal-stat">Seal replacement cycle: per launch · Reset time: &lt;8 min · Cost: ~,400/seal</div>
+          </div>
+
+          <div class="muzzle-card nose-card">
+            <div class="mc-label cyan">ADVANCED NOSE CONE DESIGN</div>
+            <h4>Manna Penetrator — Type 1</h4>
+            <p class="nose-intro">Every pod that exits this tube carries the same nose architecture.
+            Five concentric material layers, each solving a different physics problem in sequence:</p>
+            <div class="nose-layers">
+              <div class="nl">
+                <div class="nl-mat" style="background:#e0e0e0;"></div>
+                <div class="nl-info">
+                  <div class="nl-name">Tungsten Carbide Tip (WC-Co sintered · 40mm dia.)</div>
+                  <div class="nl-fn">Initiates thermite ignition on seal contact. Hardest manufactured engineering material.
+                  Survives 1,190 m/s impact without deformation. Per-launch replaceable on threaded collar.</div>
+                </div>
+              </div>
+              <div class="nl">
+                <div class="nl-mat" style="background:#ccc8aa;"></div>
+                <div class="nl-info">
+                  <div class="nl-name">Silicon Carbide Ceramic Ogive (SiC · full nose shape)</div>
+                  <div class="nl-fn">Survives thermite flash: 2,000°C peak for 50 microseconds.
+                  Provides aerodynamic nose form through Mach 3.5→8 atmospheric transit.
+                  Ablates controlled layer of material, protecting the structure behind it.</div>
+                </div>
+              </div>
+              <div class="nl">
+                <div class="nl-mat" style="background:#1a1a1a;"></div>
+                <div class="nl-info">
+                  <div class="nl-name">Carbon-Carbon Composite Shell (C/C · 12mm wall)</div>
+                  <div class="nl-fn">Primary thermal protection for Mach 3.5 atmospheric entry.
+                  Rated to 1,650°C continuous. Maintains structural integrity through the full Gryphon
+                  (or ballistic pod) trajectory. Reusable for 30+ launches.</div>
+                </div>
+              </div>
+              <div class="nl">
+                <div class="nl-mat" style="background:#8B7355;"></div>
+                <div class="nl-info">
+                  <div class="nl-name">Duocel Aluminum Foam Collar (6-8% density · 40mm deep)</div>
+                  <div class="nl-fn">Absorbs and redistributes the seal impact impulse before it reaches
+                  the payload bay. Irreversibly crushes on severe impact, providing one-time energy absorption.
+                  Inspected and replaced if deformed after each launch.</div>
+                </div>
+              </div>
+              <div class="nl">
+                <div class="nl-mat" style="background:#2255cc;"></div>
+                <div class="nl-info">
+                  <div class="nl-name">Ti-6Al-4V Shock Collar Ring (titanium alloy · structural)</div>
+                  <div class="nl-fn">Final interface between nose and payload bay. Distributes all residual
+                  impact load into the pod monocoque ring frame. Rated for &gt;100G nose-on loading.
+                  Isolates payload bay from both the thermite event and atmospheric entry shock.</div>
+                </div>
+              </div>
+            </div>
+            <div class="nose-perf">
+              <div class="np"><span>Impact velocity</span><span class="cyan">1,190 m/s (Mach 3.5)</span></div>
+              <div class="np"><span>Thermite peak temp</span><span class="amber">2,000°C · 50 μs</span></div>
+              <div class="np"><span>Structural reuse</span><span class="lime">30+ launches (C/C shell)</span></div>
+              <div class="np"><span>Tip replacement</span><span>Per-launch (WC-Co threaded)</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -278,4 +442,47 @@ import { RAIL, GRYPHON, KEPLER, COSTS } from "../data/launch";
   background-image: linear-gradient(rgba(0,229,255,.03) 1px,transparent 1px), linear-gradient(90deg,rgba(0,229,255,.03) 1px,transparent 1px);
   background-size: 60px 60px;
 }
+/* ── tube mechanics ── */
+.tube-mech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-top: 28px; }
+.tube-card { background: #07101e; border: 1px solid #192e4c; border-radius: 12px; padding: 24px; }
+.tc-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: .14em; color: #00e5ff; margin-bottom: 10px; }
+.tube-card h4 { font-size: 15px; margin-bottom: 10px; }
+.tube-card p { font-size: 13px; color: #8faec8; line-height: 1.7; margin-bottom: 12px; }
+.tc-spec { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #254469; letter-spacing: .06em; border-top: 1px solid #192e4c; padding-top: 10px; }
+
+/* ── muzzle section ── */
+.muzzle-section { margin-top: 56px; }
+.muzzle-header { margin-bottom: 28px; }
+.muzzle-header h3 { font-size: clamp(20px, 3.5vw, 32px); margin-top: 8px; margin-bottom: 12px; }
+.muzzle-header p { font-size: 14px; color: #8faec8; max-width: 720px; line-height: 1.75; }
+.muzzle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; }
+.muzzle-card { background: #07101e; border: 1px solid #192e4c; border-radius: 14px; padding: 28px; }
+.seal-card { border-color: rgba(255,170,0,.2); }
+.nose-card { border-color: rgba(0,229,255,.2); }
+.mc-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .14em; margin-bottom: 10px; text-transform: uppercase; }
+.mc-label.amber { color: #ffaa00; }
+.mc-label.cyan  { color: #00e5ff; }
+.muzzle-card h4 { font-size: 16px; margin-bottom: 16px; }
+
+/* seal layers */
+.layer-stack { display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
+.layer { display: flex; gap: 14px; }
+.layer-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: #00e5ff; min-width: 24px; padding-top: 2px; }
+.layer-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.layer-desc { font-size: 12px; color: #8faec8; line-height: 1.6; }
+.seal-stat { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #254469; border-top: 1px solid #192e4c; padding-top: 12px; }
+
+/* nose layers */
+.nose-intro { font-size: 13px; color: #8faec8; line-height: 1.7; margin-bottom: 18px; }
+.nose-layers { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.nl { display: flex; gap: 12px; align-items: flex-start; }
+.nl-mat { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; margin-top: 3px; }
+.nl-name { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+.nl-fn { font-size: 11px; color: #8faec8; line-height: 1.55; }
+.nose-perf { border-top: 1px solid #192e4c; padding-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+.np { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #4d6680; }
+.np .cyan { color: #00e5ff; }
+.np .amber { color: #ffaa00; }
+.np .lime { color: #b4ff6e; }
+
 </style>
