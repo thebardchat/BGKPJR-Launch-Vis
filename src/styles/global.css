@@ -1,0 +1,122 @@
+@import "./tokens.css";
+
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  background: var(--c-bg);
+  color: var(--c-fg);
+  font-family: var(--f-body);
+  font-size: var(--fs-base);
+  line-height: 1.65;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body { min-height: 100vh; }
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--f-display);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--c-fg);
+  letter-spacing: -0.02em;
+}
+
+a { color: var(--c-accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+code, .mono { font-family: var(--f-mono); font-size: 0.88em; }
+
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section { padding-block: 80px; }
+
+.label {
+  font-family: var(--f-mono);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--c-fg-dim);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-family: var(--f-mono);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  border: 1px solid currentColor;
+}
+
+.badge-cyan  { color: var(--c-accent);   border-color: rgba(0,229,255,.3);  background: rgba(0,229,255,.07); }
+.badge-amber { color: var(--c-accent-2); border-color: rgba(255,170,0,.3);  background: rgba(255,170,0,.07); }
+.badge-lime  { color: var(--c-accent-3); border-color: rgba(180,255,110,.3);background: rgba(180,255,110,.07); }
+.badge-red   { color: var(--c-manna-h);  border-color: rgba(255,85,85,.3);  background: rgba(255,85,85,.07); }
+.badge-wip   { color: var(--c-fg-dim);   border-color: rgba(77,102,128,.3); background: rgba(77,102,128,.05); }
+
+.card {
+  background: var(--c-card);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  padding: 28px 32px;
+}
+
+.card:hover {
+  border-color: var(--c-line-hi);
+  transition: border-color .2s var(--ease-out);
+}
+
+.divider {
+  height: 1px;
+  background: var(--c-line);
+  margin-block: 64px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+}
+th {
+  text-align: left;
+  padding: 10px 14px;
+  font-family: var(--f-mono);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-fg-dim);
+  border-bottom: 1px solid var(--c-line);
+}
+td {
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(25,46,76,.5);
+  color: var(--c-fg-2);
+  vertical-align: top;
+}
+td:first-child { color: var(--c-fg); font-weight: 500; }
+tr:last-child td { border-bottom: none; }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--c-bg-1); }
+::-webkit-scrollbar-thumb { background: var(--c-line-hi); border-radius: 3px; }
+
+/* grid overlay for blueprint feel */
+.blueprint-grid {
+  background-image:
+    linear-gradient(rgba(0,229,255,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}

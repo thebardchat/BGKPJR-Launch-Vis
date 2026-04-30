@@ -1,0 +1,60 @@
+:root {
+  /* deep-space palette */
+  --c-bg:        #040910;
+  --c-bg-1:      #080f1c;
+  --c-bg-2:      #0c1628;
+  --c-card:      #0a1422;
+  --c-line:      #192e4c;
+  --c-line-hi:   #254469;
+  --c-fg:        #ddeeff;
+  --c-fg-2:      #8faec8;
+  --c-fg-dim:    #4d6680;
+
+  /* accent — BGKPJR signature colors */
+  --c-accent:    #00e5ff;   /* cyan — maglev / EM */
+  --c-accent-2:  #ffaa00;   /* amber — thermal / Gryphon */
+  --c-accent-3:  #b4ff6e;   /* lime — solar / Kepler */
+  --c-warn:      #ff6e6e;
+  --c-good:      #00e5ff;
+  --c-manna-h:   #ff5555;   /* Manna-H Hardened */
+  --c-manna-i:   #ffaa00;   /* Manna-I Isolated */
+  --c-manna-b:   #4fc3f7;   /* Manna-B Biological */
+
+  /* type */
+  --f-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --f-body:    "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --fs-xs:   11px;
+  --fs-sm:   13px;
+  --fs-base: 16px;
+  --fs-md:   18px;
+  --fs-lg:   22px;
+  --fs-xl:   28px;
+  --fs-2xl:  40px;
+  --fs-3xl:  60px;
+  --fs-display: 88px;
+
+  /* layout */
+  --maxw:   1280px;
+  --gutter: 32px;
+  --r-sm:   4px;
+  --r-md:   10px;
+  --r-lg:   18px;
+
+  /* motion */
+  --ease-out:    cubic-bezier(.2,.7,.2,1);
+  --ease-spring: cubic-bezier(.4,1.4,.45,1);
+
+  /* shadows */
+  --shadow-1:    0 1px 2px rgba(0,0,0,.5), 0 0 0 1px var(--c-line) inset;
+  --shadow-glow: 0 0 0 1px rgba(0,229,255,.2), 0 0 32px rgba(0,229,255,.1);
+  --shadow-amber:0 0 0 1px rgba(255,170,0,.2),  0 0 32px rgba(255,170,0,.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
+}

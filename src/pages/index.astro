@@ -1,0 +1,281 @@
+---
+import Layout from "../layouts/Layout.astro";
+import LaunchVisualizer from "../islands/LaunchVisualizer.svelte";
+import PodComparison from "../islands/PodComparison.svelte";
+import { RAIL, GRYPHON, KEPLER, COSTS } from "../data/launch";
+---
+<Layout>
+  <!-- ── HEADER ─────────────────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <span class="logo-mark">⚡</span>
+        <span class="logo-text">BGKPJR</span>
+        <span class="logo-sub">Launch Architecture</span>
+      </div>
+      <nav class="nav">
+        <a href="#visualizer">Visualizer</a>
+        <a href="#systems">Systems</a>
+        <a href="#pods">Cargo Pods</a>
+        <a href="#math">Physics</a>
+        <a href="https://github.com/thebardchat/BGKPJR-Core-Simulations" target="_blank" rel="noopener">Core Sim →</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── HERO ──────────────────────────────────────────────────── -->
+  <section class="hero blueprint-grid">
+    <div class="container hero-inner">
+      <div class="hero-eyebrow">
+        <span class="badge badge-cyan">Pre-Phase A Concept</span>
+        <span class="badge badge-amber">EM Launch Architecture</span>
+        <span class="badge badge-lime">90% Cost Reduction Target</span>
+      </div>
+      <h1 class="hero-title">
+        Brazelton Gryphon Kepler<br/>
+        <span class="accent-text">Propulsion Jump Revolution</span>
+      </h1>
+      <p class="hero-desc">
+        A three-stage hybrid launch system that decouples acceleration from propulsion.
+        Ground-based superconducting magnets provide the first 1,190 m/s — no propellant consumed,
+        no first-stage recovery. Gryphon wings lift the rest. Kepler's solar sail carries it to orbit.
+      </p>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-val">{RAIL.lengthKm} km</div>
+          <div class="stat-label">Maglev Rail</div>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <div class="stat-val">Mach {RAIL.exitMach}</div>
+          <div class="stat-label">Exit Velocity</div>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <div class="stat-val">{KEPLER.sailAreaM2.toLocaleString()} m²</div>
+          <div class="stat-label">Kepler Sail</div>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <div class="stat-val">${COSTS.bgkpjrMaturePerKg}/kg</div>
+          <div class="stat-label">Target Cost</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LAUNCH VISUALIZER ─────────────────────────────────────── -->
+  <section class="section" id="visualizer">
+    <div class="container">
+      <div class="section-header">
+        <div class="label">Interactive Simulation</div>
+        <h2>Full Mission Sequence</h2>
+        <p class="section-desc">
+          Watch all four stages in real-time: maglev acceleration, Gryphon wing deploy and atmospheric
+          climb, hybrid propulsion burn to orbit, and Kepler solar sail deployment. Use the controls
+          to scrub through mission time or jump to any stage.
+        </p>
+      </div>
+      <LaunchVisualizer client:only="svelte" />
+    </div>
+  </section>
+
+  <div class="divider container"></div>
+
+  <!-- ── THREE STAGES ─────────────────────────────────────────── -->
+  <section class="section" id="systems">
+    <div class="container">
+      <div class="section-header">
+        <div class="label">Architecture Overview</div>
+        <h2>Three Stages, One Mission</h2>
+      </div>
+      <div class="stages-grid">
+
+        <div class="stage-card">
+          <div class="stage-num cyan">01</div>
+          <h3>Maglev Rail — "Jump"</h3>
+          <p>A {RAIL.lengthKm}-km evacuated superconducting tube at {RAIL.inclinationDeg}° incline accelerates the vehicle to Mach {RAIL.exitMach} in just {RAIL.runTimeSec} seconds. Tube pressure is held at {RAIL.pressureAtm} atm to eliminate aerodynamic drag. NbTi coils at {RAIL.tempK}K generate {RAIL.magFieldT}T fields. Human-rated at {RAIL.peakGForce}G sustained.</p>
+          <table class="stage-table">
+            <tr><td>Rail length</td><td class="cyan">{RAIL.lengthKm} km</td></tr>
+            <tr><td>Exit velocity</td><td class="cyan">Mach {RAIL.exitMach} ({RAIL.exitVelocityMs.toLocaleString()} m/s)</td></tr>
+            <tr><td>Peak G-load</td><td class="cyan">{RAIL.peakGForce} G</td></tr>
+            <tr><td>Tube pressure</td><td class="cyan">{RAIL.pressureAtm} atm</td></tr>
+            <tr><td>Magnet field</td><td class="cyan">{RAIL.magFieldT} T (NbTi @ {RAIL.tempK} K)</td></tr>
+          </table>
+        </div>
+
+        <div class="stage-card">
+          <div class="stage-num amber">02</div>
+          <h3>Gryphon — Atmospheric Ascent</h3>
+          <p>At tube exit, Gryphon's variable-geometry wings deploy instantly. Aerodynamic lift extends the boost window from Mach {RAIL.exitMach} to Mach {GRYPHON.maxMach}, using the atmosphere as a propellant-free energy source. Hybrid propulsion then burns to orbital velocity. Gryphon glides back unpowered — no landing propellant, no recovery legs.</p>
+          <table class="stage-table">
+            <tr><td>Wingspan</td><td class="amber">{GRYPHON.wingspanM} m</td></tr>
+            <tr><td>Dry mass</td><td class="amber">{GRYPHON.massDryKg.toLocaleString()} kg</td></tr>
+            <tr><td>Payload</td><td class="amber">{GRYPHON.payloadKg.toLocaleString()} kg</td></tr>
+            <tr><td>Max Mach</td><td class="amber">Mach {GRYPHON.maxMach}</td></tr>
+            <tr><td>Glide ratio</td><td class="amber">{GRYPHON.glideRatio}:1</td></tr>
+          </table>
+        </div>
+
+        <div class="stage-card">
+          <div class="stage-num lime">03</div>
+          <h3>Kepler Sail — Orbital & Beyond</h3>
+          <p>Above {KEPLER.deployAltKm} km, a {KEPLER.sailAreaM2.toLocaleString()} m² {KEPLER.materialCP1} solar sail deploys from a {KEPLER.massKg} kg boom assembly. Zero propellant. Zero fuel mass fraction. Solar pressure at 1 AU provides a continuous {KEPLER.nominalDvMmps} mm/s² delta-v. The Kepler stage never runs out of propellant — it runs out of mission.</p>
+          <table class="stage-table">
+            <tr><td>Sail area</td><td class="lime">{KEPLER.sailAreaM2.toLocaleString()} m²</td></tr>
+            <tr><td>Sail mass</td><td class="lime">{KEPLER.massKg} kg</td></tr>
+            <tr><td>Material</td><td class="lime">{KEPLER.materialCP1}</td></tr>
+            <tr><td>Deploy altitude</td><td class="lime">{KEPLER.deployAltKm} km</td></tr>
+            <tr><td>Solar ΔV</td><td class="lime">{KEPLER.nominalDvMmps} mm/s²</td></tr>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider container"></div>
+
+  <!-- ── CARGO PODS ──────────────────────────────────────────── -->
+  <section class="section" id="pods">
+    <div class="container">
+      <div class="section-header">
+        <div class="label">Manna Cargo Pods</div>
+        <h2>Unmanned Resupply System</h2>
+        <p class="section-desc">
+          Where Gryphon carries crew at 4G human-rated acceleration, Manna pods carry cargo at
+          2.5G–108G — unlocking dramatically higher exit velocities, smaller propellant fractions,
+          and per-kg costs that make sustained lunar operations economically viable.
+          Three variants cover every cargo class. Four more are in design.
+        </p>
+      </div>
+      <PodComparison client:only="svelte" />
+    </div>
+  </section>
+
+  <div class="divider container"></div>
+
+  <!-- ── PHYSICS / MATH ─────────────────────────────────────── -->
+  <section class="section" id="math">
+    <div class="container">
+      <div class="section-header">
+        <div class="label">Core Physics</div>
+        <h2>The Numbers Behind the Architecture</h2>
+      </div>
+      <div class="math-grid">
+        <div class="card math-card">
+          <div class="math-label">Tsiolkovsky Rocket Equation</div>
+          <div class="math-eq mono">Δv = Isp × g₀ × ln(m₀/m₁)</div>
+          <p class="math-desc">By providing 1,190 m/s from ground-based magnets, BGKPJR reduces the required propellant mass fraction by <strong>40%</strong> compared to conventional first-stage. Every kg of propellant eliminated is a kg of payload or structure.</p>
+        </div>
+        <div class="card math-card">
+          <div class="math-label">Rail Acceleration</div>
+          <div class="math-eq mono">a = v² / (2L)</div>
+          <p class="math-desc">For the 28.7 km rail at Mach 3.5 exit: a = 1,190² / (2 × 28,700) = <strong>24.7 m/s² (2.5G)</strong>. Gryphon nominal is 3.9G — within the 4G human limit. For Manna-H at Mach 22.9: a = 7,800² / (2 × 28,700) = <strong>1,060 m/s² (108G)</strong>.</p>
+        </div>
+        <div class="card math-card">
+          <div class="math-label">Solar Sail Acceleration</div>
+          <div class="math-eq mono">a = (2 × P_solar × A × η) / m</div>
+          <p class="math-desc">At 1 AU, solar pressure = 4.56 × 10⁻⁶ Pa. With 1,200 m² sail and 3.2 kg mass, effective acceleration ≈ <strong>1.8 mm/s²</strong> — low but continuous. Over 6 months: Δv ≈ <strong>2.8 km/s</strong> with zero propellant.</p>
+        </div>
+        <div class="card math-card">
+          <div class="math-label">Cost Reduction Model</div>
+          <div class="math-eq mono">C_BGKPJR = C_prop × (1 − 0.40) + C_fixed / N</div>
+          <p class="math-desc">Eliminating the first stage cuts propellant cost by 40%. Amortizing fixed costs over N = 50 launches/year achieves the $800/kg Phase 1 target. Serial production (N = 200/year) achieves <strong>$200/kg</strong> — a 96% reduction vs. Falcon 9.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ──────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="logo-mark">⚡</span>
+        <span>BGKPJR Architecture</span>
+        <span class="footer-byline">Shane Brazelton + Claude (Anthropic) — Building for the left-behind user</span>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/thebardchat/BGKPJR-Core-Simulations" target="_blank" rel="noopener">Core Simulations</a>
+        <a href="https://github.com/thebardchat/manna" target="_blank" rel="noopener">Manna Pods</a>
+        <a href="https://github.com/thebardchat/manna-pods" target="_blank" rel="noopener">Manna Concepts</a>
+        <a href="https://github.com/thebardchat/tug" target="_blank" rel="noopener">Orbital Tug</a>
+        <a href="https://claude.ai/referral/4fAMYN9Ing" target="_blank" rel="noopener">Try Claude Free →</a>
+      </div>
+      <div class="footer-legal mono">Pre-Phase A concept. All physics values are calculated estimates — not peer-reviewed engineering data. Apache 2.0.</div>
+    </div>
+  </footer>
+</Layout>
+
+<style>
+/* ── header ── */
+.site-header { border-bottom: 1px solid #192e4c; background: rgba(4,9,16,.95); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100; }
+.header-inner { display: flex; align-items: center; justify-content: space-between; padding-block: 16px; flex-wrap: wrap; gap: 12px; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-mark { font-size: 22px; }
+.logo-text { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 18px; color: #00e5ff; }
+.logo-sub { font-family: "JetBrains Mono", monospace; font-size: 11px; color: #4d6680; }
+.nav { display: flex; gap: 24px; }
+.nav a { font-size: 13px; color: #8faec8; transition: color .15s; font-weight: 500; }
+.nav a:hover { color: #00e5ff; text-decoration: none; }
+
+/* ── hero ── */
+.hero { padding-block: 100px 80px; border-bottom: 1px solid #192e4c; }
+.hero-inner { display: flex; flex-direction: column; align-items: flex-start; gap: 28px; }
+.hero-eyebrow { display: flex; gap: 10px; flex-wrap: wrap; }
+.hero-title { font-size: clamp(32px, 6vw, 72px); font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; }
+.accent-text { color: #00e5ff; }
+.hero-desc { font-size: 17px; color: #8faec8; max-width: 640px; line-height: 1.7; }
+.hero-stats { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin-top: 12px; }
+.stat { padding: 0 28px; }
+.stat:first-child { padding-left: 0; }
+.stat-val { font-family: "Space Grotesk", sans-serif; font-size: 26px; font-weight: 700; color: #00e5ff; }
+.stat-label { font-family: "JetBrains Mono", monospace; font-size: 10px; color: #4d6680; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px; }
+.stat-div { width: 1px; height: 40px; background: #192e4c; }
+
+/* ── section header ── */
+.section-header { margin-bottom: 40px; }
+.section-header h2 { font-size: clamp(24px, 4vw, 40px); margin-top: 8px; }
+.section-desc { font-size: 15px; color: #8faec8; max-width: 680px; line-height: 1.7; margin-top: 12px; }
+
+/* ── stages ── */
+.stages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.stage-card { background: #0a1422; border: 1px solid #192e4c; border-radius: 14px; padding: 28px; }
+.stage-card h3 { font-size: 18px; margin: 12px 0 12px; }
+.stage-card p { font-size: 13px; color: #8faec8; line-height: 1.7; margin-bottom: 20px; }
+.stage-num { font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; }
+.stage-num.cyan  { color: #00e5ff; }
+.stage-num.amber { color: #ffaa00; }
+.stage-num.lime  { color: #b4ff6e; }
+.stage-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.stage-table td { padding: 6px 0; border-bottom: 1px solid #192e4c; color: #8faec8; }
+.stage-table td:last-child { text-align: right; font-family: "JetBrains Mono", monospace; font-weight: 600; }
+.stage-table tr:last-child td { border-bottom: none; }
+.cyan  { color: #00e5ff !important; }
+.amber { color: #ffaa00 !important; }
+.lime  { color: #b4ff6e !important; }
+
+/* ── math ── */
+.math-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.math-card {}
+.math-label { font-family: "JetBrains Mono", monospace; font-size: 10px; color: #4d6680; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+.math-eq { font-size: 16px; color: #00e5ff; background: #040910; border: 1px solid #192e4c; border-radius: 6px; padding: 10px 14px; margin-bottom: 14px; }
+.math-desc { font-size: 13px; color: #8faec8; line-height: 1.7; }
+.math-desc strong { color: #ddeeff; }
+.mono { font-family: "JetBrains Mono", monospace; }
+
+/* ── footer ── */
+.site-footer { border-top: 1px solid #192e4c; padding-block: 40px; background: #040910; }
+.footer-inner { display: flex; flex-direction: column; gap: 20px; }
+.footer-brand { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-weight: 600; }
+.footer-byline { font-size: 12px; font-weight: 400; color: #4d6680; }
+.footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+.footer-links a { font-size: 13px; color: #4d6680; }
+.footer-links a:hover { color: #8faec8; }
+.footer-legal { font-size: 11px; color: #254469; }
+
+.blueprint-grid {
+  background-image: linear-gradient(rgba(0,229,255,.03) 1px,transparent 1px), linear-gradient(90deg,rgba(0,229,255,.03) 1px,transparent 1px);
+  background-size: 60px 60px;
+}
+</style>

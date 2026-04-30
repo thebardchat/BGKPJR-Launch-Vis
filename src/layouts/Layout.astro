@@ -1,0 +1,24 @@
+---
+import "../styles/global.css";
+const {
+  title = "BGKPJR Launch Visualization — Electromagnetic Launch Architecture",
+  description = "Interactive 3D visualization of the BGKPJR electromagnetic launch system: maglev rail, Gryphon ascent, Kepler solar sail, and Manna cargo pods.",
+} = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23040910'/%3E%3Cpath d='M4 28 L16 4 L28 28' fill='none' stroke='%2300e5ff' stroke-width='2'/%3E%3Cpath d='M9 18 L23 18' stroke='%2300e5ff' stroke-width='1.5' stroke-dasharray='3 2'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <slot />
+</body>
+</html>
