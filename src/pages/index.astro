@@ -103,6 +103,7 @@ import { RAIL, GRYPHON, KEPLER, COSTS } from "../data/launch";
             <tr><td>Tube pressure</td><td class="cyan">{RAIL.pressureAtm} atm</td></tr>
             <tr><td>Magnet field</td><td class="cyan">{RAIL.magFieldT} T (NbTi @ {RAIL.tempK} K)</td></tr>
           </table>
+          <a class="stage-deep-link" href="https://thebardchat.github.io/BGKPJR-Stage1-Tube" target="_blank" rel="noopener">Stage 1 Deep Dive →</a>
         </div>
 
         <div class="stage-card">
@@ -415,6 +416,8 @@ import { RAIL, GRYPHON, KEPLER, COSTS } from "../data/launch";
 .stage-table td { padding: 6px 0; border-bottom: 1px solid #192e4c; color: #8faec8; }
 .stage-table td:last-child { text-align: right; font-family: "JetBrains Mono", monospace; font-weight: 600; }
 .stage-table tr:last-child td { border-bottom: none; }
+.stage-deep-link { display: inline-block; margin-top: 18px; font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 600; color: #00e5ff; letter-spacing: 0.04em; transition: color .15s; }
+.stage-deep-link:hover { color: #66f0ff; text-decoration: none; }
 .cyan  { color: #00e5ff !important; }
 .amber { color: #ffaa00 !important; }
 .lime  { color: #b4ff6e !important; }
