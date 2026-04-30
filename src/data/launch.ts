@@ -257,5 +257,95 @@ export const PODS_WIP = [
   },
 ] as const;
 
+// ─── DUAL MUZZLE ALTERNATIVES (trade study — Phase 0) ────────────────
+// Per 2026-04-30 architectural decision: thermite and LH₂ membranes are
+// documented as TWO PARALLEL ALTERNATIVES, not one superseding the other.
+export const MUZZLE_ALTERNATIVES = {
+  lh2: {
+    id: "lh2",
+    name: "Liquid Hydrogen (LH₂) Cryogenic Membrane",
+    color: "#00e5ff",
+    novelIp: true,
+    membraneTempK: 20,
+    thrustBoostMs: 50,
+    resetTimeMin: 30,
+    advantages: [
+      "Novel patent-worthy IP — controlled detonation as thrust impulse (~50 m/s Δv)",
+      "Acts as cryogenic heat sink during transit",
+      "Aligns with vehicle LH₂ propellant supply (shared cryogenic infrastructure)",
+    ],
+    disadvantages: [
+      "Requires cryogenic refill at muzzle every launch (~30 min reset)",
+      "Detonation control is the central engineering risk",
+      "Hindenburg-mode failure if controlled detonation is not achieved",
+    ],
+  },
+  thermite: {
+    id: "thermite",
+    name: "Thermite (Al/Fe₂O₃) Three-Layer Membrane",
+    color: "#ffaa00",
+    novelIp: false,
+    ignitionVelocityMs: 1700,
+    ignitionTimeUs: 50,
+    peakTempC: 2000,
+    resetTimeMin: 8,
+    advantages: [
+      "Self-consuming: zero solid debris field after vehicle passes",
+      "Faster reset between launches (~8 min vs 30 min for LH₂)",
+      "No cryogenic infrastructure required at muzzle",
+    ],
+    disadvantages: [
+      "No thrust-impulse benefit (detonation contained, not directed)",
+      "Pyrotechnic consumable cost per launch (~$2,400/seal)",
+      "Plasma aperture flash exposes vehicle nose to 2,000 °C for 50 μs",
+    ],
+  },
+} as const;
+
+// ─── SPACE TUG (Phase 1 critical path, between LEO and lunar orbit) ──
+export const SPACE_TUG = {
+  name:                "BGKPJR Space Tug",
+  status:              "Phase 1 — Concept Design",
+  description:         "Permanent in-space cargo tug. Captures Manna pods in LEO, performs trans-lunar injection, hands off to Blue Moon Mk2 / SpaceX HLS lander in lunar orbit.",
+  sizeAnalogy:         "Size of a delivery van — never lands, never fights Earth's gravity. Engine + hitch. Fuel is the limit, not size.",
+  dryMassKg:           5_000,
+  propellantKg:        25_000,
+  lengthM:             6,
+  diameterM:           3,
+  deltaVPerRefuelMs:   4_500,
+  leoToLunarDvMs:      4_100,
+  propellantType:      "LH₂ / LOX (ISRU compatible)",
+  refuelInterface:     "Manna-F propellant pod compatible",
+  lifetimeCycles:      50,
+} as const;
+
+// ─── PROGRAM TIMELINE ('Manhattan Project' framing) ──────────────────
+export const TIMELINE = {
+  programStartYear:                 2026,
+  operationalCargoYearLow:          2033,        // 7-year aggressive
+  operationalCargoYearHigh:         2035,        // 9-year nominal
+  lunarBaseTargetYear:              2029,        // 3-year aggressive (NASA-led)
+  artemisCadenceMonths:             10,          // crew launches every 10 mo
+  bgkpjrCargoCadenceTargetInitial:  21,          // pod launches/year
+  bgkpjrCargoCadenceTargetMature:   50,
+  phases: [
+    { phase: "Phase 0", years: "2026–2028", name: "Concept Maturation & Subscale Demonstrator", status: "ACTIVE" },
+    { phase: "Phase 1", years: "2029–2033", name: "Manna Cargo Pipeline (unmanned)", status: "PRIMARY OBJECTIVE" },
+    { phase: "Phase 2", years: "2034+",     name: "Gryphon Crewed Vehicle", status: "DEFERRED" },
+  ],
+} as const;
+
+// ─── SPACE PIPELINE ARCHITECTURE (BGKPJR's role in the broader system) ─
+export const SPACE_PIPELINE = {
+  thesis: "BGKPJR is the missing link in the Space Pipeline. Blue Origin builds the landers (Blue Moon Mk2) and ISRU refuel tech (Blue Alchemist). SpaceX builds HLS. NASA builds Artemis crew flights. Nobody yet has a way to get cargo into LEO cheaply enough to feed sustained lunar operations. We do.",
+  stages: [
+    { stage: "1", actor: "BGKPJR Rail",         action: "Earth surface → LEO (cargo pods)" },
+    { stage: "2", actor: "BGKPJR Space Tug",    action: "LEO → low-lunar orbit" },
+    { stage: "3", actor: "Blue Moon / HLS",     action: "Lunar orbit → lunar surface" },
+    { stage: "4", actor: "Empty Manna pods",    action: "Filled with regolith → radiation-proof base structures (NASA ISRU concept)" },
+  ],
+} as const;
+
 export type PodKey = keyof typeof PODS;
 export type WipPod = typeof PODS_WIP[number];
+export type MuzzleId = keyof typeof MUZZLE_ALTERNATIVES;

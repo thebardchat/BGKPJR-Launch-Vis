@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import LaunchVisualizer from "../islands/LaunchVisualizer.svelte";
 import PodComparison from "../islands/PodComparison.svelte";
 import TubeCrossSection from "../islands/TubeCrossSection.svelte";
-import { RAIL, GRYPHON, KEPLER, COSTS, MISSION } from "../data/launch";
+import { RAIL, GRYPHON, KEPLER, COSTS, MISSION, SPACE_TUG, TIMELINE, SPACE_PIPELINE, MUZZLE_ALTERNATIVES } from "../data/launch";
 ---
 <Layout>
   <!-- ── HEADER ─────────────────────────────────────────────────── -->
@@ -15,11 +15,13 @@ import { RAIL, GRYPHON, KEPLER, COSTS, MISSION } from "../data/launch";
         <span class="logo-sub">Launch Architecture</span>
       </div>
       <nav class="nav">
-        <a href="#visualizer">Visualizer</a>
-        <a href="#systems">Systems</a>
-        <a href="#pods">Cargo Pods</a>
-        <a href="#math">Physics</a>
-        <a href="https://github.com/thebardchat/BGKPJR-Core-Simulations" target="_blank" rel="noopener">Core Sim →</a>
+        <a href="#pipeline">Pipeline</a>
+        <a href="#timeline">Timeline</a>
+        <a href="#systems">Stages</a>
+        <a href="#tube">Tube</a>
+        <a href="#pods">Pods</a>
+        <a href="#audit">Status</a>
+        <a href="https://github.com/thebardchat/BGKPJR-Core-Simulations" target="_blank" rel="noopener">Sims →</a>
       </nav>
     </div>
   </header>
@@ -37,11 +39,12 @@ import { RAIL, GRYPHON, KEPLER, COSTS, MISSION } from "../data/launch";
         <span class="accent-text">Propulsion Jump Revolution</span>
       </h1>
       <p class="hero-desc">
-        A three-stage hybrid launch system that decouples acceleration from propulsion.
-        Ground-based coilgun magnets in an evacuated tunnel provide the first {RAIL.exitVelocityMs.toLocaleString()} m/s
-        (Mach {RAIL.exitMach}) — no first-stage propellant consumed, no booster to recover.
-        A liquid-hydrogen cryogenic membrane seals the muzzle. Gryphon wings lift the rest.
-        Kepler's solar sail carries it onward.
+        <strong style="color:#00e5ff">The missing link in the Space Pipeline.</strong>
+        Blue Origin and SpaceX are building the lunar landers. NASA is flying Artemis crews every {TIMELINE.artemisCadenceMonths} months.
+        Nobody yet has a way to get cargo into low Earth orbit cheaply enough to feed a permanent moon base.
+        BGKPJR is a {RAIL.lengthKm}-km evacuated coilgun tunnel that accelerates unmanned cargo pods to Mach {RAIL.exitMach}
+        ({RAIL.exitVelocityMs.toLocaleString()} m/s) on ground-based magnets — no first-stage propellant, no booster to recover.
+        Operational cargo pipeline in {TIMELINE.operationalCargoYearLow - TIMELINE.programStartYear}–{TIMELINE.operationalCargoYearHigh - TIMELINE.programStartYear} years.
       </p>
       <div class="hero-stats">
         <div class="stat">
@@ -85,19 +88,73 @@ import { RAIL, GRYPHON, KEPLER, COSTS, MISSION } from "../data/launch";
 
   <div class="divider container"></div>
 
-  <!-- ── THREE STAGES ─────────────────────────────────────────── -->
+  <!-- ── SPACE PIPELINE ───────────────────────────────────────── -->
+  <section class="section" id="pipeline">
+    <div class="container">
+      <div class="section-header">
+        <div class="label">The Big Picture</div>
+        <h2>The Space Pipeline</h2>
+        <p class="section-desc">{SPACE_PIPELINE.thesis}</p>
+      </div>
+      <div class="pipeline-grid">
+        {SPACE_PIPELINE.stages.map((s) => (
+          <div class="pipeline-card">
+            <div class="pl-num">0{s.stage}</div>
+            <div class="pl-actor">{s.actor}</div>
+            <div class="pl-action">{s.action}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="divider container"></div>
+
+  <!-- ── MANHATTAN TIMELINE ───────────────────────────────────── -->
+  <section class="section" id="timeline">
+    <div class="container">
+      <div class="section-header">
+        <div class="label">The Manhattan Timeline</div>
+        <h2>Operational Cargo Pipeline in {TIMELINE.operationalCargoYearLow - TIMELINE.programStartYear}–{TIMELINE.operationalCargoYearHigh - TIMELINE.programStartYear} Years</h2>
+        <p class="section-desc">
+          Assuming a {TIMELINE.programStartYear} program start, an operational unmanned cargo pipeline can be in service by
+          {TIMELINE.operationalCargoYearLow}–{TIMELINE.operationalCargoYearHigh}. Parallel to NASA Artemis crew launches every
+          {TIMELINE.artemisCadenceMonths} months using SpaceX HLS or Blue Moon Mk2 landers. Lunar base target: {TIMELINE.lunarBaseTargetYear}.
+          Every Artemis crew that arrives finds a base already supplied by BGKPJR cargo.
+        </p>
+      </div>
+      <div class="timeline-grid">
+        {TIMELINE.phases.map((p) => (
+          <div class={`timeline-card ${p.status === "ACTIVE" ? "active" : p.status === "PRIMARY OBJECTIVE" ? "primary" : "deferred"}`}>
+            <div class="tl-phase">{p.phase}</div>
+            <div class="tl-years">{p.years}</div>
+            <div class="tl-name">{p.name}</div>
+            <div class={`tl-status ${p.status === "ACTIVE" ? "lime" : p.status === "PRIMARY OBJECTIVE" ? "cyan" : "muted"}`}>{p.status}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="divider container"></div>
+
+  <!-- ── ARCHITECTURE STAGES ──────────────────────────────────── -->
   <section class="section" id="systems">
     <div class="container">
       <div class="section-header">
-        <div class="label">Architecture Overview</div>
-        <h2>Three Stages, One Mission</h2>
+        <div class="label">Architecture Stages</div>
+        <h2>Earth → LEO → Moon</h2>
+        <p class="section-desc">
+          Phase 1 critical path: cargo pods only. The crewed Gryphon vehicle is deferred to Phase 2 — same {RAIL.lengthKm} km rail accommodates both,
+          but the unmanned cargo pipeline ships first.
+        </p>
       </div>
       <div class="stages-grid">
 
         <div class="stage-card">
           <div class="stage-num cyan">01</div>
-          <h3>Maglev Rail — "Jump"</h3>
-          <p>A {RAIL.lengthKm}-km evacuated coilgun tube at {RAIL.inclinationDeg}° incline accelerates the vehicle to Mach {RAIL.exitMach} in {RAIL.runTimeSec} seconds. Tube pressure is held at {RAIL.pressureAtm} atm to eliminate aerodynamic drag. Linear synchronous motor architecture: copper drive coils on the rail, REBCO superconducting armature on the vehicle (cooled to {RAIL.armatureTempK} K). Peak field {RAIL.magFieldT} T. Sustained at {RAIL.peakGForce} G — within human-rating margin.</p>
+          <h3>Maglev Rail — "The Jump"</h3>
+          <p>A {RAIL.lengthKm}-km evacuated coilgun tube at {RAIL.inclinationDeg}° incline accelerates the cargo pod to Mach {RAIL.exitMach} in {RAIL.runTimeSec} seconds. Tube pressure {RAIL.pressureAtm} atm. Linear synchronous motor architecture: copper drive coils on the rail, REBCO superconducting armature on the vehicle (cooled to {RAIL.armatureTempK} K). Peak field {RAIL.magFieldT} T. Sustained at {RAIL.peakGForce} G.</p>
           <table class="stage-table">
             <tr><td>Rail length</td><td class="cyan">{RAIL.lengthKm} km</td></tr>
             <tr><td>Exit velocity</td><td class="cyan">Mach {RAIL.exitMach} ({RAIL.exitVelocityMs.toLocaleString()} m/s)</td></tr>
@@ -105,28 +162,87 @@ import { RAIL, GRYPHON, KEPLER, COSTS, MISSION } from "../data/launch";
             <tr><td>Tube pressure</td><td class="cyan">{RAIL.pressureAtm} atm</td></tr>
             <tr><td>Drive architecture</td><td class="cyan">LSM coilgun · {RAIL.coilCount.toLocaleString()} coils @ {RAIL.coilSpacingM} m</td></tr>
             <tr><td>Magnet field</td><td class="cyan">{RAIL.magFieldT} T (REBCO armature @ {RAIL.armatureTempK} K)</td></tr>
-            <tr><td>Muzzle seal</td><td class="cyan">LH₂ cryogenic membrane</td></tr>
+            <tr><td>Muzzle seal</td><td class="cyan">LH₂ + thermite (trade study)</td></tr>
           </table>
           <a class="stage-deep-link" href="https://thebardchat.github.io/BGKPJR-Stage1-Tube" target="_blank" rel="noopener">Stage 1 Deep Dive →</a>
         </div>
 
-        <div class="stage-card">
+        <div class="stage-card primary-card">
           <div class="stage-num amber">02</div>
-          <h3>Gryphon — Atmospheric Ascent</h3>
-          <p>At tube exit, Gryphon's variable-geometry wings deploy instantly. Aerodynamic lift extends the boost window from Mach {RAIL.exitMach} to Mach {GRYPHON.maxMach}, using the atmosphere as a propellant-free energy source. Hybrid propulsion then burns to orbital velocity. Gryphon glides back unpowered — no landing propellant, no recovery legs.</p>
+          <h3>Manna Pods + Space Tug — "The Highway"</h3>
+          <p>
+            Pods exit the rail in LEO. A permanent in-space <strong style="color:#ffaa00">{SPACE_TUG.name}</strong> (
+            {SPACE_TUG.sizeAnalogy.split('—')[0].trim()}) captures pods, performs trans-lunar injection, and hands off to a Blue Moon Mk2 or SpaceX HLS lander in lunar orbit. The Tug never lands.
+            It refuels in space (LEO or lunar orbit) — eventually from Manna-F propellant pods carrying ISRU water from the lunar surface.
+          </p>
           <table class="stage-table">
-            <tr><td>Wingspan</td><td class="amber">{GRYPHON.wingspanM} m</td></tr>
-            <tr><td>Dry mass</td><td class="amber">{GRYPHON.massDryKg.toLocaleString()} kg</td></tr>
+            <tr><td>Tug dry mass</td><td class="amber">{SPACE_TUG.dryMassKg.toLocaleString()} kg</td></tr>
+            <tr><td>Propellant capacity</td><td class="amber">{SPACE_TUG.propellantKg.toLocaleString()} kg</td></tr>
+            <tr><td>Δv per refuel</td><td class="amber">{SPACE_TUG.deltaVPerRefuelMs.toLocaleString()} m/s</td></tr>
+            <tr><td>LEO → lunar Δv</td><td class="amber">{SPACE_TUG.leoToLunarDvMs.toLocaleString()} m/s</td></tr>
+            <tr><td>Refuel interface</td><td class="amber">Manna-F pods · ISRU water</td></tr>
+            <tr><td>Lifetime</td><td class="amber">{SPACE_TUG.lifetimeCycles} cycles (refurbishable)</td></tr>
+          </table>
+        </div>
+
+        <div class="stage-card primary-card">
+          <div class="stage-num lime">03</div>
+          <h3>Lunar Surface — "The Base"</h3>
+          <p>
+            Lander delivers pods to the surface. Cargo offloaded by crane. <strong style="color:#b4ff6e">Empty pods don't get wasted</strong> — they become "Space LEGOs."
+            NASA in-situ resource utilization research is designing ways to fill empty pressure vessels with lunar regolith,
+            converting them into radiation-proof walls, storage sheds, and roads. <strong>Every pod we ship is a free building block for the first permanent moon city.</strong>
+          </p>
+          <table class="stage-table">
+            <tr><td>Pod end-of-life</td><td class="lime">Regolith-filled structure</td></tr>
+            <tr><td>Lunar lander partner</td><td class="lime">Blue Moon Mk2 · SpaceX HLS</td></tr>
+            <tr><td>Refuel source (long-term)</td><td class="lime">ISRU lunar water</td></tr>
+            <tr><td>Crew arrival cadence</td><td class="lime">Artemis · every {TIMELINE.artemisCadenceMonths} mo</td></tr>
+            <tr><td>Cargo cadence (initial)</td><td class="lime">{TIMELINE.bgkpjrCargoCadenceTargetInitial} pods / year</td></tr>
+            <tr><td>Cargo cadence (mature)</td><td class="lime">{TIMELINE.bgkpjrCargoCadenceTargetMature} pods / year</td></tr>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider container"></div>
+
+  <!-- ── DEFERRED: GRYPHON + KEPLER ───────────────────────────── -->
+  <section class="section" id="deferred">
+    <div class="container">
+      <div class="section-header">
+        <div class="label" style="color:#4d6680">Phase 2 — Deferred</div>
+        <h2 style="color:#8faec8">Future Vehicles: Gryphon &amp; Kepler</h2>
+        <p class="section-desc">
+          The crewed Gryphon waverider and the Kepler solar sail are technically valid concepts within the same {RAIL.lengthKm} km rail
+          architecture, but they are <strong>deferred</strong> until the unmanned cargo pipeline is operational. Constants retained for
+          forward-compatibility — the rail accommodates both vehicles. Showcase only; not on Phase 1 critical path.
+        </p>
+      </div>
+      <div class="stages-grid">
+
+        <div class="stage-card deferred-card">
+          <div class="stage-num amber" style="opacity:0.5">02-DEFERRED</div>
+          <h3 style="color:#8faec8">Gryphon — Atmospheric Ascent <span class="deferred-tag">DEFERRED</span></h3>
+          <p>Hypersonic waverider with variable-geometry wings. At tube exit, wings deploy instantly. Aerodynamic lift to Mach {GRYPHON.maxMach},
+          then hybrid propulsion to LEO. Glides back unpowered — no recovery propellant. Same rail as cargo pods.</p>
+          <table class="stage-table">
+            <tr><td>Wingspan</td><td class="amber">{GRYPHON.spanDeployedM} m deployed</td></tr>
+            <tr><td>Dry mass</td><td class="amber">{(GRYPHON.massDryKg/1000).toFixed(0)} t (provisional)</td></tr>
             <tr><td>Payload</td><td class="amber">{GRYPHON.payloadKg.toLocaleString()} kg</td></tr>
             <tr><td>Max Mach</td><td class="amber">Mach {GRYPHON.maxMach}</td></tr>
             <tr><td>Glide ratio</td><td class="amber">{GRYPHON.glideRatio}:1</td></tr>
           </table>
         </div>
 
-        <div class="stage-card">
-          <div class="stage-num lime">03</div>
-          <h3>Kepler Sail — Orbital & Beyond</h3>
-          <p>Above {KEPLER.deployAltKm} km, a {KEPLER.sailAreaM2.toLocaleString()} m² {KEPLER.materialCP1} solar sail deploys from a {KEPLER.massKg} kg boom assembly. Zero propellant. Zero fuel mass fraction. Solar pressure at 1 AU provides a continuous {KEPLER.nominalDvMmps} mm/s² delta-v. The Kepler stage never runs out of propellant — it runs out of mission.</p>
+        <div class="stage-card deferred-card">
+          <div class="stage-num lime" style="opacity:0.5">03-DEFERRED</div>
+          <h3 style="color:#8faec8">Kepler Sail — Deep-Space Δv <span class="deferred-tag">DEFERRED</span></h3>
+          <p>Above {KEPLER.deployAltKm} km, a {KEPLER.sailAreaM2.toLocaleString()} m² {KEPLER.materialCP1} solar sail deploys.
+          Zero propellant; solar pressure at 1 AU gives {KEPLER.nominalDvMmps} mm/s² continuous Δv. For Phase 4 deep-space
+          missions only — no role in cargo-to-Moon pipeline.</p>
           <table class="stage-table">
             <tr><td>Sail area</td><td class="lime">{KEPLER.sailAreaM2.toLocaleString()} m²</td></tr>
             <tr><td>Sail mass</td><td class="lime">{KEPLER.massKg} kg</td></tr>
@@ -192,23 +308,86 @@ import { RAIL, GRYPHON, KEPLER, COSTS, MISSION } from "../data/launch";
         </div>
       </div>
 
-      <!-- ══ MUZZLE INTERFACE — VACUUMGATE LH₂ MEMBRANE ══ -->
+      <!-- ══ MUZZLE INTERFACE — DUAL ALTERNATIVES (TRADE STUDY) ══ -->
       <div class="muzzle-section">
         <div class="muzzle-header">
-          <div class="label" style="color:var(--amber)">The Critical Engineering Problem</div>
-          <h3>The Muzzle Interface — Liquid Hydrogen Cryogenic Membrane</h3>
+          <div class="label" style="color:var(--amber)">The Critical Engineering Problem · Open Trade Study</div>
+          <h3>The Muzzle Interface — Two Alternative Architectures</h3>
           <p>
             When a vehicle exits the tube at Mach {RAIL.exitMach} ({RAIL.exitVelocityMs.toLocaleString()} m/s), it transitions
             from {RAIL.pressureAtm} atm vacuum into ~1 atm atmosphere in milliseconds.
             Dynamic pressure at exit is {RAIL.muzzleStagnationMPa} MPa — without mitigation, the structural shock destroys the vehicle.
-            The single problem this membrane solves is making that transition survivable, and turning the energy released into a thrust impulse.
+            The membrane that holds the tube vacuum, and how the vehicle breaches it, is the single most-load-bearing engineering decision in the architecture.
           </p>
           <p style="margin-top:14px">
-            <strong style="color:var(--amber)">The novel IP:</strong> a thin {RAIL.muzzleLh2TempK} K liquid-hydrogen membrane sealed behind a
-            structural diaphragm. As the vehicle breaches it, the LH₂ vaporizes (~1000× volume expansion), mixes with atmospheric oxygen
-            in the wake, and detonates. The detonation wave is engineered to propagate <em>behind</em> the vehicle, providing a controlled
-            thrust-boost impulse rather than a destructive shock.
+            <strong style="color:#ddeeff">Two parallel alternatives are under study.</strong> A formal trade study in Phase 0 will determine the
+            canonical choice. We document both honestly here:
           </p>
+        </div>
+
+        <div class="muzzle-alts-grid">
+          <div class="muzzle-alt lh2">
+            <div class="ma-header">
+              <div class="ma-name" style="color:#00e5ff">{MUZZLE_ALTERNATIVES.lh2.name}</div>
+              <div class="ma-badge canon">CURRENT CANONICAL</div>
+            </div>
+            <p style="font-size:13px;color:#8faec8;line-height:1.65">
+              A thin {MUZZLE_ALTERNATIVES.lh2.membraneTempK} K liquid-hydrogen membrane sealed behind a structural diaphragm. As the vehicle breaches it,
+              the LH₂ vaporizes (~1000× volume expansion), mixes with atmospheric oxygen in the wake, and detonates. The detonation wave is
+              engineered to propagate <em>behind</em> the vehicle, providing a ~{MUZZLE_ALTERNATIVES.lh2.thrustBoostMs} m/s thrust impulse rather than a destructive shock.
+            </p>
+            <div class="ma-h">ADVANTAGES</div>
+            <ul class="ma-list pro">
+              {MUZZLE_ALTERNATIVES.lh2.advantages.map((a) => <li>{a}</li>)}
+            </ul>
+            <div class="ma-h">DISADVANTAGES</div>
+            <ul class="ma-list con">
+              {MUZZLE_ALTERNATIVES.lh2.disadvantages.map((d) => <li>{d}</li>)}
+            </ul>
+            <div class="seal-stat">Reset time: ~{MUZZLE_ALTERNATIVES.lh2.resetTimeMin} min · Net Δv gain: ~{MUZZLE_ALTERNATIVES.lh2.thrustBoostMs} m/s · Novel IP: yes</div>
+          </div>
+
+          <div class="muzzle-alt thermite">
+            <div class="ma-header">
+              <div class="ma-name" style="color:#ffaa00">{MUZZLE_ALTERNATIVES.thermite.name}</div>
+              <div class="ma-badge alt">ALTERNATIVE</div>
+            </div>
+            <p style="font-size:13px;color:#8faec8;line-height:1.65">
+              A three-layer membrane: structural carbon-fiber diaphragm + aerogel buffer + L1 thermite (Al/Fe₂O₃). On tungsten-carbide tip contact at
+              {MUZZLE_ALTERNATIVES.thermite.ignitionVelocityMs.toLocaleString()} m/s, friction initiates thermite combustion across the membrane in
+              &lt;{MUZZLE_ALTERNATIVES.thermite.ignitionTimeUs} μs. The membrane self-consumes into alumina dust and iron vapor — zero solid debris field.
+              The vehicle passes through a brief plasma aperture rather than a solid barrier. {MUZZLE_ALTERNATIVES.thermite.peakTempC.toLocaleString()} °C peak.
+            </p>
+            <div class="ma-h">ADVANTAGES</div>
+            <ul class="ma-list pro">
+              {MUZZLE_ALTERNATIVES.thermite.advantages.map((a) => <li>{a}</li>)}
+            </ul>
+            <div class="ma-h">DISADVANTAGES</div>
+            <ul class="ma-list con">
+              {MUZZLE_ALTERNATIVES.thermite.disadvantages.map((d) => <li>{d}</li>)}
+            </ul>
+            <div class="seal-stat">Reset time: ~{MUZZLE_ALTERNATIVES.thermite.resetTimeMin} min · Per-launch consumable: ~$2,400 · Novel IP: no</div>
+          </div>
+        </div>
+
+        <div style="margin-top:24px;padding:18px 22px;border-radius:10px;background:rgba(0,229,255,0.04);border:1px dashed #192e4c">
+          <div class="label" style="color:#00e5ff">Trade study deliverables (Phase 0)</div>
+          <ul style="font-size:13px;color:#8faec8;line-height:1.7;margin-top:10px;padding-left:18px">
+            <li>Detonation control modeling for LH₂ alternative — central feasibility risk</li>
+            <li>Subscale demonstration of both alternatives at representative pressures and velocities</li>
+            <li>Per-launch cost comparison including infrastructure amortization</li>
+            <li>Failure-mode analysis (FMEA) for both</li>
+            <li>Alignment with vehicle nose architecture (Type-1 thermite-compatible vs Type-2 LH₂-compatible)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ══ ORIGINAL DETAILED MUZZLE BREAKDOWN BELOW ══ -->
+      <div class="muzzle-section" style="margin-top:32px">
+        <div class="muzzle-header">
+          <div class="label" style="color:var(--amber)">Detailed Implementation Specifications · LH₂ Canonical</div>
+          <h3 style="font-size:24px">Reference Implementation: LH₂ Membrane + Type-2 Nose</h3>
+          <p>Detailed layer-by-layer specification for the current canonical (LH₂) muzzle architecture.</p>
         </div>
 
         <div class="muzzle-grid">
@@ -329,6 +508,76 @@ import { RAIL, GRYPHON, KEPLER, COSTS, MISSION } from "../data/launch";
         </p>
       </div>
       <PodComparison client:only="svelte" />
+    </div>
+  </section>
+
+  <div class="divider container"></div>
+
+  <!-- ── HONESTY / AUDIT STATUS ──────────────────────────────── -->
+  <section class="section" id="audit">
+    <div class="container">
+      <div class="section-header">
+        <div class="label">Pre-Lukens Audit · 2026-04-30</div>
+        <h2>What's Validated, What's Provisional, What's a Known Gap</h2>
+        <p class="section-desc">
+          On April 30, 2026, the entire BGKPJR repository set was audited dimensional-integrity-end-to-end before being sent for review by
+          <strong style="color:#ddeeff">Scott Lukens, Senior Systems Engineer at Victory Solutions Inc.</strong> (a NASA Marshall Space Flight Center contractor in Huntsville, AL).
+          We caught and reconciled three different baselines that had drifted apart, fixed mutually-incompatible math, and aligned every visualization with a single source of truth.
+          The full audit and decision record are public.
+        </p>
+        <p style="margin-top:12px;font-size:14px;color:#8faec8">
+          📄 <a href="https://github.com/thebardchat/BGKPJR-Core-Simulations/blob/main/expert-reviews/PRE-LUKENS-AUDIT-2026-04-30.md" target="_blank" rel="noopener" style="color:#00e5ff">PRE-LUKENS-AUDIT-2026-04-30.md</a> &nbsp;·&nbsp;
+          📄 <a href="https://github.com/thebardchat/BGKPJR-Core-Simulations/blob/main/CANONICAL-BASELINE.md" target="_blank" rel="noopener" style="color:#00e5ff">CANONICAL-BASELINE.md</a> &nbsp;·&nbsp;
+          🐍 <a href="https://github.com/thebardchat/BGKPJR-Core-Simulations/blob/main/simulation/src/bgkpjr_dimensions.py" target="_blank" rel="noopener" style="color:#00e5ff">bgkpjr_dimensions.py</a> (single source of truth)
+        </p>
+      </div>
+
+      <div class="audit-grid">
+        <div class="audit-card green">
+          <div class="audit-h green">✓ VALIDATED — Math Closes</div>
+          <ul class="audit-list">
+            <li>Rail kinematics: a = v² / (2L) closes to {RAIL.peakGForce} G within 1% tolerance</li>
+            <li>Mach ↔ velocity conversion correct (Mach {RAIL.exitMach} = {RAIL.exitVelocityMs} m/s at sea-level SOS)</li>
+            <li>All values within Patent BGKPJR-001 claim envelope (Mach 3-5, 15-45°, ≤5G)</li>
+            <li>Dimensional source-of-truth wired into both repos</li>
+            <li>Solar sail Δv now derived from physics, not asserted</li>
+            <li>Architecture corrected from railgun to LSM coilgun (per simulated McNab review)</li>
+          </ul>
+        </div>
+
+        <div class="audit-card amber">
+          <div class="audit-h amber">⚠ PROVISIONAL — Pending Lukens Validation</div>
+          <ul class="audit-list">
+            <li>Gryphon vehicle mass (50 t baseline; could be 93 t per integration analysis) — Phase 2 / DEFERRED</li>
+            <li>Manna pod stress reconciliation across H/I/B/F/M/X/T variants</li>
+            <li>Peak power 39 GW vs new 580 GJ storage requirement (may not match)</li>
+            <li>VG aspirational 0.001 atm vacuum target sits OUTSIDE patent envelope (would require continuation)</li>
+            <li>Space Tug sizing (5 t dry / 25 t propellant — pending Phase 0 design study)</li>
+            <li>Muzzle architecture: thermite vs LH₂ trade study not yet performed</li>
+          </ul>
+        </div>
+
+        <div class="audit-card red">
+          <div class="audit-h red">○ KNOWN GAPS — Not Yet Implemented</div>
+          <ul class="audit-list">
+            <li>Solar sail dynamics module (constants correct; trajectory model is a gap)</li>
+            <li>Pod stress models / structural FEA</li>
+            <li>Atmospheric exit aero analysis (the hardest critique a hypersonics expert would pose)</li>
+            <li>Trajectory-closure simulation showing vehicle reaches LEO at claimed payload</li>
+            <li>Energy storage system architecture (39 GW peak / 580 GJ store) — not designed</li>
+            <li>Civil engineering for {RAIL.lengthKm}-km tube alignment (LIGO-class precision over 35× the length)</li>
+            <li>FMEA + risk register (NIAC submission requires this)</li>
+            <li>Real (not synthetic) peer review — Lukens would be the first</li>
+          </ul>
+        </div>
+      </div>
+
+      <p style="margin-top:24px;font-size:13px;color:#8faec8;line-height:1.7;text-align:center;max-width:760px;margin-inline:auto">
+        <strong style="color:#ddeeff">This honesty matters.</strong> Pre-Phase-A aerospace concepts that hide their gaps fail review on first contact.
+        The goal here is to know the gaps better than any reviewer will, document them publicly, and ladder up to the level where NIAC Phase I funding pays
+        to close the next layer. The {TIMELINE.operationalCargoYearLow - TIMELINE.programStartYear}-{TIMELINE.operationalCargoYearHigh - TIMELINE.programStartYear}-year Manhattan timeline
+        depends on this discipline, not optimism.
+      </p>
     </div>
   </section>
 
@@ -501,5 +750,56 @@ import { RAIL, GRYPHON, KEPLER, COSTS, MISSION } from "../data/launch";
 .np .cyan { color: #00e5ff; }
 .np .amber { color: #ffaa00; }
 .np .lime { color: #b4ff6e; }
+
+/* ── space pipeline + timeline + deferred ── */
+.pipeline-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 28px; }
+.pipeline-card { background: #07101e; border: 1px solid #192e4c; border-radius: 12px; padding: 22px; }
+.pl-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #00e5ff; letter-spacing: .14em; margin-bottom: 10px; }
+.pl-actor { font-size: 14px; font-weight: 600; color: #ddeeff; margin-bottom: 8px; }
+.pl-action { font-size: 13px; color: #8faec8; line-height: 1.6; }
+
+.timeline-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-top: 28px; }
+.timeline-card { background: #07101e; border: 1px solid #192e4c; border-radius: 12px; padding: 22px; }
+.timeline-card.active   { border-color: rgba(180, 255, 110, .5); }
+.timeline-card.primary  { border-color: rgba(0, 229, 255, .55); }
+.timeline-card.deferred { border-color: #192e4c; opacity: 0.65; }
+.tl-phase { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .18em; color: #4d6680; margin-bottom: 4px; }
+.tl-years { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: #ddeeff; margin-bottom: 8px; }
+.tl-name { font-size: 14px; color: #8faec8; margin-bottom: 12px; line-height: 1.5; }
+.tl-status { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .14em; }
+.tl-status.lime { color: #b4ff6e; }
+.tl-status.cyan { color: #00e5ff; }
+.tl-status.muted { color: #4d6680; }
+
+.primary-card { border-color: rgba(255, 170, 0, .35); box-shadow: 0 0 0 1px rgba(255,170,0,.08); }
+.deferred-card { opacity: 0.6; border-style: dashed; }
+.deferred-tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .18em; color: #4d6680; padding: 2px 8px; border: 1px solid #4d6680; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
+
+/* ── muzzle alternatives (trade study) ── */
+.muzzle-alts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px; margin-top: 24px; }
+.muzzle-alt { background: #07101e; border: 1px solid #192e4c; border-radius: 14px; padding: 26px; }
+.muzzle-alt.lh2 { border-color: rgba(0, 229, 255, .35); }
+.muzzle-alt.thermite { border-color: rgba(255, 170, 0, .35); }
+.ma-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.ma-name { font-size: 16px; font-weight: 600; }
+.ma-badge { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .14em; padding: 3px 9px; border-radius: 4px; }
+.ma-badge.canon { background: rgba(0,229,255,.12); color: #00e5ff; border: 1px solid rgba(0,229,255,.4); }
+.ma-badge.alt { background: rgba(255,170,0,.10); color: #ffaa00; border: 1px solid rgba(255,170,0,.35); }
+.ma-list { font-size: 12px; line-height: 1.6; color: #8faec8; padding-left: 16px; margin: 8px 0 14px; }
+.ma-list.pro li::marker { color: #b4ff6e; }
+.ma-list.con li::marker { color: #ff7777; }
+.ma-h { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .14em; margin-top: 12px; margin-bottom: 4px; color: #4d6680; }
+
+/* ── honesty / audit status ── */
+.audit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 24px; }
+.audit-card { background: #07101e; border: 1px solid #192e4c; border-radius: 10px; padding: 18px; }
+.audit-card.green { border-color: rgba(180,255,110,.4); }
+.audit-card.amber { border-color: rgba(255,170,0,.4); }
+.audit-card.red { border-color: rgba(255,119,119,.4); }
+.audit-h { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .14em; margin-bottom: 8px; }
+.audit-h.green { color: #b4ff6e; }
+.audit-h.amber { color: #ffaa00; }
+.audit-h.red { color: #ff7777; }
+.audit-list { font-size: 12px; line-height: 1.65; color: #8faec8; padding-left: 14px; margin: 0; }
 
 </style>
