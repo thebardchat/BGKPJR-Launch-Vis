@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import LaunchVisualizer from "../islands/LaunchVisualizer.svelte";
 import PodComparison from "../islands/PodComparison.svelte";
 import TubeCrossSection from "../islands/TubeCrossSection.svelte";
-import { RAIL, GRYPHON, KEPLER, COSTS } from "../data/launch";
+import { RAIL, GRYPHON, KEPLER, COSTS, MISSION } from "../data/launch";
 ---
 <Layout>
   <!-- ── HEADER ─────────────────────────────────────────────────── -->
@@ -38,8 +38,10 @@ import { RAIL, GRYPHON, KEPLER, COSTS } from "../data/launch";
       </h1>
       <p class="hero-desc">
         A three-stage hybrid launch system that decouples acceleration from propulsion.
-        Ground-based superconducting magnets provide the first 1,190 m/s — no propellant consumed,
-        no first-stage recovery. Gryphon wings lift the rest. Kepler's solar sail carries it to orbit.
+        Ground-based coilgun magnets in an evacuated tunnel provide the first {RAIL.exitVelocityMs.toLocaleString()} m/s
+        (Mach {RAIL.exitMach}) — no first-stage propellant consumed, no booster to recover.
+        A liquid-hydrogen cryogenic membrane seals the muzzle. Gryphon wings lift the rest.
+        Kepler's solar sail carries it onward.
       </p>
       <div class="hero-stats">
         <div class="stat">
@@ -95,13 +97,15 @@ import { RAIL, GRYPHON, KEPLER, COSTS } from "../data/launch";
         <div class="stage-card">
           <div class="stage-num cyan">01</div>
           <h3>Maglev Rail — "Jump"</h3>
-          <p>A {RAIL.lengthKm}-km evacuated superconducting tube at {RAIL.inclinationDeg}° incline accelerates the vehicle to Mach {RAIL.exitMach} in just {RAIL.runTimeSec} seconds. Tube pressure is held at {RAIL.pressureAtm} atm to eliminate aerodynamic drag. NbTi coils at {RAIL.tempK}K generate {RAIL.magFieldT}T fields. Human-rated at {RAIL.peakGForce}G sustained.</p>
+          <p>A {RAIL.lengthKm}-km evacuated coilgun tube at {RAIL.inclinationDeg}° incline accelerates the vehicle to Mach {RAIL.exitMach} in {RAIL.runTimeSec} seconds. Tube pressure is held at {RAIL.pressureAtm} atm to eliminate aerodynamic drag. Linear synchronous motor architecture: copper drive coils on the rail, REBCO superconducting armature on the vehicle (cooled to {RAIL.armatureTempK} K). Peak field {RAIL.magFieldT} T. Sustained at {RAIL.peakGForce} G — within human-rating margin.</p>
           <table class="stage-table">
             <tr><td>Rail length</td><td class="cyan">{RAIL.lengthKm} km</td></tr>
             <tr><td>Exit velocity</td><td class="cyan">Mach {RAIL.exitMach} ({RAIL.exitVelocityMs.toLocaleString()} m/s)</td></tr>
             <tr><td>Peak G-load</td><td class="cyan">{RAIL.peakGForce} G</td></tr>
             <tr><td>Tube pressure</td><td class="cyan">{RAIL.pressureAtm} atm</td></tr>
-            <tr><td>Magnet field</td><td class="cyan">{RAIL.magFieldT} T (NbTi @ {RAIL.tempK} K)</td></tr>
+            <tr><td>Drive architecture</td><td class="cyan">LSM coilgun · {RAIL.coilCount.toLocaleString()} coils @ {RAIL.coilSpacingM} m</td></tr>
+            <tr><td>Magnet field</td><td class="cyan">{RAIL.magFieldT} T (REBCO armature @ {RAIL.armatureTempK} K)</td></tr>
+            <tr><td>Muzzle seal</td><td class="cyan">LH₂ cryogenic membrane</td></tr>
           </table>
           <a class="stage-deep-link" href="https://thebardchat.github.io/BGKPJR-Stage1-Tube" target="_blank" rel="noopener">Stage 1 Deep Dive →</a>
         </div>
@@ -146,10 +150,12 @@ import { RAIL, GRYPHON, KEPLER, COSTS } from "../data/launch";
         <div class="label">Stage 1 — Deep Dive</div>
         <h2>Inside the EM Launch Tube</h2>
         <p class="section-desc">
-          The 28.7 km barrel is the largest superconducting coilgun ever proposed.
-          A cascade of NbTi electromagnetic coil rings creates a traveling magnetic wave through the evacuated bore.
-          The pod surfs that wave from zero to Mach 3.5 in 23 seconds — then punches through a proprietary
-          three-layer muzzle seal and enters the atmosphere.
+          The {RAIL.lengthKm} km barrel is the largest electromagnetic accelerator ever proposed.
+          {RAIL.coilCount.toLocaleString()} copper drive coils at {RAIL.coilSpacingM} m spacing form a Linear Synchronous Motor:
+          stationary coils on the tube, REBCO superconducting armature on the vehicle. The pod surfs a traveling
+          magnetic wave from zero to Mach {RAIL.exitMach} in {RAIL.runTimeSec} seconds — then breaches a liquid-hydrogen
+          cryogenic membrane that holds the vacuum behind it. The membrane breach is the engineered event
+          that gates the entire architecture.
         </p>
       </div>
 
@@ -159,42 +165,49 @@ import { RAIL, GRYPHON, KEPLER, COSTS } from "../data/launch";
         <div class="tube-card">
           <div class="tc-num">01</div>
           <h4>Sequential Coil Firing</h4>
-          <p>Each NbTi superconducting coil is energized individually, timed to the pod&apos;s exact position.
-          The leading coils ahead of the pod fire first, creating a forward magnetic attraction.
-          Coils behind the pod are de-energized immediately — preventing back-pull drag.
-          The result is a rolling wave of magnetic force that the pod&apos;s armature continuously chases.</p>
-          <div class="tc-spec">Coil spacing: ~100 m · Switching time: &lt;1 ms · Field: 8 T peak</div>
+          <p>Each copper drive coil along the {RAIL.lengthKm} km tube is energized individually, timed to the pod&apos;s exact position.
+          Leading coils fire first, generating forward magnetic attraction. Trailing coils de-energize immediately
+          to prevent back-pull. The result is a traveling magnetic wave that the vehicle&apos;s onboard REBCO armature
+          continuously chases — Linear Synchronous Motor architecture, identical in principle to a maglev train scaled to launch energies.</p>
+          <div class="tc-spec">{RAIL.coilCount.toLocaleString()} coils · {RAIL.coilSpacingM} m spacing · &lt;1 ms switching · {RAIL.magFieldT} T peak field</div>
         </div>
         <div class="tube-card">
           <div class="tc-num">02</div>
-          <h4>The Armature</h4>
-          <p>The mid-section of every pod contains a superconducting armature — a ring of NbTi wire chilled
-          by a small onboard cryostat. This armature acts as a permanent magnet inside the bore, coupling
-          to the tube&apos;s traveling field. No physical contact with the tube wall.
-          No friction. No rail erosion. The pod rides a magnetic cushion at 3.9G for 23 seconds.</p>
-          <div class="tc-spec">Armature temp: 20 K (onboard LH₂ coolant) · Gap: ~25 mm bore clearance</div>
+          <h4>The Vehicle Armature</h4>
+          <p>The midsection of the vehicle carries a REBCO high-temperature superconducting armature ring,
+          chilled to {RAIL.armatureTempK} K by an onboard cryostat that doubles as the LH₂ propellant tank.
+          The armature couples magnetically to the tube&apos;s traveling field. No physical contact with the bore wall.
+          No friction. No rail erosion. The vehicle rides a magnetic cushion at {RAIL.peakGForce} G for {RAIL.runTimeSec} seconds.</p>
+          <div class="tc-spec">REBCO armature · {RAIL.armatureTempK} K LH₂ coolant · ~30 mm bore clearance</div>
         </div>
         <div class="tube-card">
           <div class="tc-num">03</div>
-          <h4>900 MJ Energy Source</h4>
-          <p>A single launch consumes ~900 MJ — the equivalent of 215 kg of rocket propellant,
-          stored as electrical energy in a flywheel bank at the base of the tube.
-          The flywheels spin up over ~4 minutes between launches, accepting grid power at a controlled rate.
-          Peak discharge lasts 23 seconds. Charge rate: 650 MW. Peak draw: 39 GW.</p>
-          <div class="tc-spec">Stored energy: 900 MJ · Peak power: 39 GW · Recharge: 4 min</div>
+          <h4>{RAIL.energyGJ} GJ Energy Source</h4>
+          <p>A single launch transfers ~{Math.round(0.5 * GRYPHON.massGrossFuelKg * RAIL.exitVelocityMs ** 2 / 1e9)} GJ of kinetic energy
+          to a fully-loaded vehicle (mass {(GRYPHON.massGrossFuelKg/1000).toFixed(0)} t at {RAIL.exitVelocityMs.toLocaleString()} m/s).
+          With drive efficiency ~60%, the SMES (Superconducting Magnetic Energy Storage) bank stores {RAIL.energyGJ} GJ.
+          Peak discharge lasts {RAIL.runTimeSec} seconds. Charge rate: {RAIL.chargeRateMW} MW. Peak draw: {RAIL.peakPowerGW} GW.
+          Rail Δv represents {(MISSION.railDvFraction * 100).toFixed(0)}% of the {MISSION.deltaVToLeoMs.toLocaleString()} m/s required to reach LEO — the rest is rocket propulsion.</p>
+          <div class="tc-spec">Stored energy: {RAIL.energyGJ} GJ · Peak power: {RAIL.peakPowerGW} GW · Recharge: {RAIL.chargeTimeMin} min</div>
         </div>
       </div>
 
-      <!-- ══ MUZZLE INTERFACE ══ -->
+      <!-- ══ MUZZLE INTERFACE — VACUUMGATE LH₂ MEMBRANE ══ -->
       <div class="muzzle-section">
         <div class="muzzle-header">
           <div class="label" style="color:var(--amber)">The Critical Engineering Problem</div>
-          <h3>The Muzzle Interface</h3>
+          <h3>The Muzzle Interface — Liquid Hydrogen Cryogenic Membrane</h3>
           <p>
-            When a pod exits the tube at Mach 3.5, it hits a sealed membrane that has been maintaining 0.1 atm vacuum
-            behind it for the entire 23-second run. This membrane must exist — without it the tube fills with air
-            and the next pod accelerates through drag instead of vacuum. The nose of every pod is purpose-engineered
-            around this single impact event.
+            When a vehicle exits the tube at Mach {RAIL.exitMach} ({RAIL.exitVelocityMs.toLocaleString()} m/s), it transitions
+            from {RAIL.pressureAtm} atm vacuum into ~1 atm atmosphere in milliseconds.
+            Dynamic pressure at exit is {RAIL.muzzleStagnationMPa} MPa — without mitigation, the structural shock destroys the vehicle.
+            The single problem this membrane solves is making that transition survivable, and turning the energy released into a thrust impulse.
+          </p>
+          <p style="margin-top:14px">
+            <strong style="color:var(--amber)">The novel IP:</strong> a thin {RAIL.muzzleLh2TempK} K liquid-hydrogen membrane sealed behind a
+            structural diaphragm. As the vehicle breaches it, the LH₂ vaporizes (~1000× volume expansion), mixes with atmospheric oxygen
+            in the wake, and detonates. The detonation wave is engineered to propagate <em>behind</em> the vehicle, providing a controlled
+            thrust-boost impulse rather than a destructive shock.
           </p>
         </div>
 
@@ -202,76 +215,77 @@ import { RAIL, GRYPHON, KEPLER, COSTS } from "../data/launch";
 
           <div class="muzzle-card seal-card">
             <div class="mc-label amber">PROPRIETARY SEAL DESIGN</div>
-            <h4>Three-Layer Thermite Membrane System</h4>
+            <h4>Three-Layer Cryogenic Membrane System</h4>
             <div class="layer-stack">
               <div class="layer">
                 <div class="layer-num">L3</div>
                 <div class="layer-info">
-                  <div class="layer-name">Carbon Fiber Diaphragm</div>
-                  <div class="layer-desc">Outer structural layer. Maintains tube vacuum seal between launches. 
-                  Rated to 1.4 atm differential. Scored for controlled radial fracture on nose contact.</div>
+                  <div class="layer-name">Structural Diaphragm (atmosphere side)</div>
+                  <div class="layer-desc">Carbon fiber composite. Holds the {RAIL.pressureAtm} atm differential between
+                  vacuum interior and ambient atmosphere. Scored for controlled radial fracture on vehicle contact.
+                  Replaced per-launch.</div>
                 </div>
               </div>
               <div class="layer">
                 <div class="layer-num" style="color:var(--fg-dim)">L2</div>
                 <div class="layer-info">
-                  <div class="layer-name">Aerogel Composite Buffer</div>
-                  <div class="layer-desc">Ultra-low density ceramic foam (8 kg/m³). Zero debris risk on fracture.
-                  Provides pressure equalization buffer and thermal isolation during the 23-second run.</div>
+                  <div class="layer-name">Thermal Isolation Buffer</div>
+                  <div class="layer-desc">Multi-layer aerogel insulation, ~25 cm thick. Thermally isolates the L1 LH₂ layer
+                  from the L3 structural skin. Maintains LH₂ at {RAIL.muzzleLh2TempK} K against ambient heat soak between launches.</div>
                 </div>
               </div>
               <div class="layer">
                 <div class="layer-num" style="color:var(--amber)">L1</div>
                 <div class="layer-info">
-                  <div class="layer-name" style="color:var(--amber)">Thermite Membrane (Al/Fe₂O₃)</div>
-                  <div class="layer-desc">The proprietary layer. On tungsten carbide tip contact at 1,190 m/s,
-                  friction initiates thermite combustion across the membrane in &lt;50 microseconds.
-                  The membrane self-consumes into alumina ceramic dust and iron vapor — zero solid debris field.
-                  The pod passes through a brief plasma aperture rather than a solid barrier.</div>
+                  <div class="layer-name" style="color:var(--amber)">Liquid Hydrogen Membrane ({RAIL.muzzleLh2TempK} K)</div>
+                  <div class="layer-desc">The proprietary layer. ~3 cm of LH₂ contained between cryogenic-rated thin films.
+                  On vehicle breach, the LH₂ flashes to gas, vents into the atmospheric wake, mixes stoichiometrically with O₂,
+                  and detonates from plasma-temperature ignition on the vehicle skin. Controlled detonation geometry directs
+                  the impulse forward — adding ~50 m/s Δv at minimal vehicle mass cost.</div>
                 </div>
               </div>
             </div>
-            <div class="seal-stat">Seal replacement cycle: per launch · Reset time: &lt;8 min · Cost: ~,400/seal</div>
+            <div class="seal-stat">Seal replacement: per launch · Reset time: ~30 min (LH₂ refill) · Net thrust gain: ~50 m/s Δv</div>
           </div>
 
           <div class="muzzle-card nose-card">
             <div class="mc-label cyan">ADVANCED NOSE CONE DESIGN</div>
-            <h4>Manna Penetrator — Type 1</h4>
-            <p class="nose-intro">Every pod that exits this tube carries the same nose architecture.
+            <h4>Gryphon Nose — Type 2 (LH₂ Compatible)</h4>
+            <p class="nose-intro">Vehicle nose architecture engineered for the LH₂ membrane breach event.
             Five concentric material layers, each solving a different physics problem in sequence:</p>
             <div class="nose-layers">
               <div class="nl">
                 <div class="nl-mat" style="background:#e0e0e0;"></div>
                 <div class="nl-info">
-                  <div class="nl-name">Tungsten Carbide Tip (WC-Co sintered · 40mm dia.)</div>
-                  <div class="nl-fn">Initiates thermite ignition on seal contact. Hardest manufactured engineering material.
-                  Survives 1,190 m/s impact without deformation. Per-launch replaceable on threaded collar.</div>
+                  <div class="nl-name">Tungsten Carbide Tip (WC-Co sintered · 50 mm dia.)</div>
+                  <div class="nl-fn">Penetrates the L3 structural diaphragm. Hardest manufactured engineering material.
+                  Survives {RAIL.exitVelocityMs.toLocaleString()} m/s impact without deformation. Per-launch replaceable on threaded collar.</div>
                 </div>
               </div>
               <div class="nl">
                 <div class="nl-mat" style="background:#ccc8aa;"></div>
                 <div class="nl-info">
                   <div class="nl-name">Silicon Carbide Ceramic Ogive (SiC · full nose shape)</div>
-                  <div class="nl-fn">Survives thermite flash: 2,000°C peak for 50 microseconds.
-                  Provides aerodynamic nose form through Mach 3.5→8 atmospheric transit.
+                  <div class="nl-fn">Survives the LH₂/O₂ detonation wave: peak temperature ~3,000 K for ~10 ms.
+                  Provides aerodynamic nose form through Mach {RAIL.exitMach}→{GRYPHON.maxMach} atmospheric transit.
                   Ablates controlled layer of material, protecting the structure behind it.</div>
                 </div>
               </div>
               <div class="nl">
                 <div class="nl-mat" style="background:#1a1a1a;"></div>
                 <div class="nl-info">
-                  <div class="nl-name">Carbon-Carbon Composite Shell (C/C · 12mm wall)</div>
-                  <div class="nl-fn">Primary thermal protection for Mach 3.5 atmospheric entry.
-                  Rated to 1,650°C continuous. Maintains structural integrity through the full Gryphon
-                  (or ballistic pod) trajectory. Reusable for 30+ launches.</div>
+                  <div class="nl-name">Carbon-Carbon Composite Shell (C/C · 15 mm wall)</div>
+                  <div class="nl-fn">Primary thermal protection for Mach {GRYPHON.maxMach} atmospheric ascent.
+                  Rated to 1,650°C continuous. Active transpiration cooling integrated with vehicle LH₂ supply
+                  (per Boyd hypersonics review). Maintains structural integrity through the full Gryphon trajectory.</div>
                 </div>
               </div>
               <div class="nl">
                 <div class="nl-mat" style="background:#8B7355;"></div>
                 <div class="nl-info">
-                  <div class="nl-name">Duocel Aluminum Foam Collar (6-8% density · 40mm deep)</div>
-                  <div class="nl-fn">Absorbs and redistributes the seal impact impulse before it reaches
-                  the payload bay. Irreversibly crushes on severe impact, providing one-time energy absorption.
+                  <div class="nl-name">Duocel Aluminum Foam Collar (6-8% density · 60 mm deep)</div>
+                  <div class="nl-fn">Absorbs the membrane impact impulse and the detonation back-pressure transient
+                  before it reaches the payload bay. Irreversibly crushes on severe impact, providing one-time energy absorption.
                   Inspected and replaced if deformed after each launch.</div>
                 </div>
               </div>
@@ -280,14 +294,14 @@ import { RAIL, GRYPHON, KEPLER, COSTS } from "../data/launch";
                 <div class="nl-info">
                   <div class="nl-name">Ti-6Al-4V Shock Collar Ring (titanium alloy · structural)</div>
                   <div class="nl-fn">Final interface between nose and payload bay. Distributes all residual
-                  impact load into the pod monocoque ring frame. Rated for &gt;100G nose-on loading.
-                  Isolates payload bay from both the thermite event and atmospheric entry shock.</div>
+                  impact load into the vehicle monocoque ring frame. Rated for &gt;{Math.round(RAIL.peakGForce * 25)} G nose-on transient loading.
+                  Isolates payload bay from both the LH₂ detonation event and atmospheric entry shock.</div>
                 </div>
               </div>
             </div>
             <div class="nose-perf">
-              <div class="np"><span>Impact velocity</span><span class="cyan">1,190 m/s (Mach 3.5)</span></div>
-              <div class="np"><span>Thermite peak temp</span><span class="amber">2,000°C · 50 μs</span></div>
+              <div class="np"><span>Impact velocity</span><span class="cyan">{RAIL.exitVelocityMs.toLocaleString()} m/s (Mach {RAIL.exitMach})</span></div>
+              <div class="np"><span>Detonation peak temp</span><span class="amber">~3,000 K · 10 ms</span></div>
               <div class="np"><span>Structural reuse</span><span class="lime">30+ launches (C/C shell)</span></div>
               <div class="np"><span>Tip replacement</span><span>Per-launch (WC-Co threaded)</span></div>
             </div>
@@ -331,12 +345,12 @@ import { RAIL, GRYPHON, KEPLER, COSTS } from "../data/launch";
         <div class="card math-card">
           <div class="math-label">Tsiolkovsky Rocket Equation</div>
           <div class="math-eq mono">Δv = Isp × g₀ × ln(m₀/m₁)</div>
-          <p class="math-desc">By providing 1,190 m/s from ground-based magnets, BGKPJR reduces the required propellant mass fraction by <strong>40%</strong> compared to conventional first-stage. Every kg of propellant eliminated is a kg of payload or structure.</p>
+          <p class="math-desc">By providing {RAIL.exitVelocityMs.toLocaleString()} m/s from ground-based magnets, BGKPJR delivers <strong>{(MISSION.railDvFraction * 100).toFixed(1)}%</strong> of the {MISSION.deltaVToLeoMs.toLocaleString()} m/s needed to reach LEO. Every m/s of rail Δv is a kg of propellant the vehicle no longer carries.</p>
         </div>
         <div class="card math-card">
           <div class="math-label">Rail Acceleration</div>
           <div class="math-eq mono">a = v² / (2L)</div>
-          <p class="math-desc">For the 28.7 km rail at Mach 3.5 exit: a = 1,190² / (2 × 28,700) = <strong>24.7 m/s² (2.5G)</strong>. Gryphon nominal is 3.9G — within the 4G human limit. For Manna-H at Mach 22.9: a = 7,800² / (2 × 28,700) = <strong>1,060 m/s² (108G)</strong>.</p>
+          <p class="math-desc">For the {RAIL.lengthKm} km rail at Mach {RAIL.exitMach} exit: a = {RAIL.exitVelocityMs}² / (2 × {(RAIL.lengthKm*1000).toLocaleString()}) = <strong>{(RAIL.exitVelocityMs**2/(2*RAIL.lengthKm*1000)).toFixed(1)} m/s² ({(RAIL.exitVelocityMs**2/(2*RAIL.lengthKm*1000)/9.80665).toFixed(2)} G)</strong>. Sustained at {RAIL.peakGForce} G — within the 5 G patent envelope and well below the {(RAIL.peakGForce*1.25).toFixed(1)} G human limit.</p>
         </div>
         <div class="card math-card">
           <div class="math-label">Solar Sail Acceleration</div>
