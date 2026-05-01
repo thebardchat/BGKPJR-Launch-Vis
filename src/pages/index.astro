@@ -171,16 +171,19 @@ import { RAIL, GRYPHON, KEPLER, COSTS, MISSION, SPACE_TUG, TIMELINE, SPACE_PIPEL
           <div class="stage-num amber">02</div>
           <h3>Manna Pods + Space Tug — "The Highway"</h3>
           <p>
-            Pods exit the rail in LEO. A permanent in-space <strong style="color:#ffaa00">{SPACE_TUG.name}</strong> (
-            {SPACE_TUG.sizeAnalogy.split('—')[0].trim()}) captures pods, performs trans-lunar injection, and hands off to a Blue Moon Mk2 or SpaceX HLS lander in lunar orbit. The Tug never lands.
-            It refuels in space (LEO or lunar orbit) — eventually from Manna-F propellant pods carrying ISRU water from the lunar surface.
+            Pods exit the rail at Mach {RAIL.exitMach}, fire a small 2nd-stage rocket to push apogee to ~166 km (sub-orbital).
+            A permanent in-space <strong style="color:#ffaa00">{SPACE_TUG.name}</strong>
+            ({SPACE_TUG.sizeAnalogy.split('—')[0].trim()}) catches the pod at apogee, circularizes it to LEO with a {(SPACE_TUG.catchAndCircularizeMs/1000).toFixed(2)} km/s burn,
+            refuels from a co-orbiting Manna-F propellant pod, then performs trans-lunar injection. The Tug hands off to a Blue Moon Mk2 or SpaceX HLS lander in lunar orbit.
+            The Tug never lands and never fights Earth's gravity — it lives in space, refuels in space, and works in space.
           </p>
           <table class="stage-table">
             <tr><td>Tug dry mass</td><td class="amber">{SPACE_TUG.dryMassKg.toLocaleString()} kg</td></tr>
-            <tr><td>Propellant capacity</td><td class="amber">{SPACE_TUG.propellantKg.toLocaleString()} kg</td></tr>
-            <tr><td>Δv per refuel</td><td class="amber">{SPACE_TUG.deltaVPerRefuelMs.toLocaleString()} m/s</td></tr>
-            <tr><td>LEO → lunar Δv</td><td class="amber">{SPACE_TUG.leoToLunarDvMs.toLocaleString()} m/s</td></tr>
-            <tr><td>Refuel interface</td><td class="amber">Manna-F pods · ISRU water</td></tr>
+            <tr><td>Propellant capacity</td><td class="amber">{SPACE_TUG.propellantKg.toLocaleString()} kg per refuel</td></tr>
+            <tr><td>Catch + circularize Δv</td><td class="amber">{(SPACE_TUG.catchAndCircularizeMs/1000).toFixed(2)} km/s (largest burn)</td></tr>
+            <tr><td>TLI Δv (after refuel)</td><td class="amber">{(SPACE_TUG.cislunarTliMs/1000).toFixed(2)} km/s</td></tr>
+            <tr><td>Total outbound Δv</td><td class="amber">{(SPACE_TUG.totalOutboundDvMs/1000).toFixed(1)} km/s (LEO refuel required)</td></tr>
+            <tr><td>Refuel interface</td><td class="amber">Manna-F pods · long-term ISRU water</td></tr>
             <tr><td>Lifetime</td><td class="amber">{SPACE_TUG.lifetimeCycles} cycles (refurbishable)</td></tr>
           </table>
         </div>
@@ -539,9 +542,10 @@ import { RAIL, GRYPHON, KEPLER, COSTS, MISSION, SPACE_TUG, TIMELINE, SPACE_PIPEL
             <li>Rail kinematics: a = v² / (2L) closes to {RAIL.peakGForce} G within 1% tolerance</li>
             <li>Mach ↔ velocity conversion correct (Mach {RAIL.exitMach} = {RAIL.exitVelocityMs} m/s at sea-level SOS)</li>
             <li>All values within Patent BGKPJR-001 claim envelope (Mach 3-5, 15-45°, ≤5G)</li>
-            <li>Dimensional source-of-truth wired into both repos</li>
-            <li>Solar sail Δv now derived from physics, not asserted</li>
+            <li>Dimensional source-of-truth wired into both repos with CI enforcement</li>
+            <li>Solar sail dynamics module operational; Δv derived from physics</li>
             <li>Architecture corrected from railgun to LSM coilgun (per simulated McNab review)</li>
+            <li><strong style="color:#b4ff6e">NEW: Trajectory closure simulation operational.</strong> Sub-orbital catch architecture (45° rail → 166 km apogee, Tug catches and circularizes to LEO with refueling) closes geometrically and energetically.</li>
           </ul>
         </div>
 
@@ -554,18 +558,18 @@ import { RAIL, GRYPHON, KEPLER, COSTS, MISSION, SPACE_TUG, TIMELINE, SPACE_PIPEL
             <li>VG aspirational 0.001 atm vacuum target sits OUTSIDE patent envelope (would require continuation)</li>
             <li>Space Tug sizing (5 t dry / 25 t propellant — pending Phase 0 design study)</li>
             <li>Muzzle architecture: thermite vs LH₂ trade study not yet performed</li>
+            <li>Tug 11.5 km/s outbound Δv budget requires Manna-F refueling between burns — refuel cadence + propellant supply chain not yet sized</li>
           </ul>
         </div>
 
         <div class="audit-card red">
           <div class="audit-h red">○ KNOWN GAPS — Not Yet Implemented</div>
           <ul class="audit-list">
-            <li>Solar sail dynamics module (constants correct; trajectory model is a gap)</li>
             <li>Pod stress models / structural FEA</li>
-            <li>Atmospheric exit aero analysis (the hardest critique a hypersonics expert would pose)</li>
-            <li>Trajectory-closure simulation showing vehicle reaches LEO at claimed payload</li>
+            <li>Atmospheric exit aero analysis at Mach 5 (max-Q ~503 kPa surfaced by sim — needs full hypersonic CFD)</li>
             <li>Energy storage system architecture (39 GW peak / 580 GJ store) — not designed</li>
             <li>Civil engineering for {RAIL.lengthKm}-km tube alignment (LIGO-class precision over 35× the length)</li>
+            <li>Tug capture maneuver simulation (relative motion + closing burn at apogee)</li>
             <li>FMEA + risk register (NIAC submission requires this)</li>
             <li>Real (not synthetic) peer review — Lukens would be the first</li>
           </ul>

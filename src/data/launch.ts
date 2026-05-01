@@ -302,18 +302,26 @@ export const MUZZLE_ALTERNATIVES = {
   },
 } as const;
 
-// ─── SPACE TUG (Phase 1 critical path, between LEO and lunar orbit) ──
+// ─── SPACE TUG (Phase 1 critical path, between sub-orbital apogee and lunar orbit) ──
+// Architecture validated by trajectory_closure.py (2026-04-30):
+//   Pod cannot self-circularize to LEO from canonical Mach 5 / 4G rail.
+//   Tug catches pod at sub-orbital apogee (~166 km), provides full
+//   circularization Δv (~6.13 km/s), refuels in LEO from Manna-F propellant
+//   pods, then performs TLI (~3.15 km/s) to lunar orbit.
 export const SPACE_TUG = {
   name:                "BGKPJR Space Tug",
   status:              "Phase 1 — Concept Design",
-  description:         "Permanent in-space cargo tug. Captures Manna pods in LEO, performs trans-lunar injection, hands off to Blue Moon Mk2 / SpaceX HLS lander in lunar orbit.",
+  description:         "Permanent in-space cargo tug. Catches Manna pods at sub-orbital apogee (~166 km), circularizes them to LEO, refuels from Manna-F propellant pods, performs trans-lunar injection, hands off to Blue Moon Mk2 / SpaceX HLS lander in lunar orbit.",
   sizeAnalogy:         "Size of a delivery van — never lands, never fights Earth's gravity. Engine + hitch. Fuel is the limit, not size.",
   dryMassKg:           5_000,
   propellantKg:        25_000,
   lengthM:             6,
   diameterM:           3,
-  deltaVPerRefuelMs:   4_500,
-  leoToLunarDvMs:      4_100,
+  catchAndCircularizeMs: 6_130,        // Sim-validated for 166 km apogee catch
+  cislunarTliMs:       3_150,           // TLI from circular LEO
+  returnToLeoMs:       2_200,           // lunar capture + return
+  totalOutboundDvMs:   11_500,          // catch + circularize + TLI (requires LEO refuel)
+  refuelingRequired:   true,            // single-tank Tug undersized; refuels in LEO
   propellantType:      "LH₂ / LOX (ISRU compatible)",
   refuelInterface:     "Manna-F propellant pod compatible",
   lifetimeCycles:      50,
